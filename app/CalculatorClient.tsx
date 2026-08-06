@@ -3,124 +3,138 @@
 import React, { useState } from "react";
 import { Calculator, FileText, Layers, Building2 } from "lucide-react";
 
-export default function Home() {
+export default function CalculatorClient() {
   const [activeTab, setActiveTab] = useState<"wall" | "concrete" | "slab">("wall");
 
-  // ১. ওয়াল এস্টিমেশন স্টেট (Wall Estimate Inputs)
+  // ১. ওয়াল ইনপুট (গাথুনি)
   const [wallInputs, setWallInputs] = useState({
     length: 20,
     height: 10,
-    thickness: 0.41, // Feet
-    cementRatio: 2,
+    thicknessInch: 5, // ইঞ্চি এককে ইনপুট
+    cementRatio: 1,
     sandRatio: 4,
   });
 
-  // ২. কংক্রিট/ছাদ ঢালাই স্টেট (Concrete Estimate Inputs)
+  // ২. কংক্রিট ইনপুট (ঢালাই)
   const [concreteInputs, setConcreteInputs] = useState({
     length: 20,
     width: 15,
-    thickness: 0.41, // Feet
+    thicknessInch: 5, // ইঞ্চি এককে ইনপুট
     cementRatio: 1,
     sandRatio: 2,
     aggregateRatio: 4,
   });
 
-  // ৩. রড হিসাবের স্টেট (Slab Reinforcement Inputs)
+  // ৩. রডের ইনপুট (Slab Reinforcement)
   const [slabInputs, setSlabInputs] = useState({
-    length: 420, // mm or inches based on excel
-    breadth: 420,
-    rodDiaMm: 10,
-    mainSpacing: 5,
-    distSpacing: 5,
-    extraTopShortSpacing: 5,
-    extraTopLongSpacing: 5,
+    lengthFt: 20, // ফুট
+    breadthFt: 15, // ফুট
+    rodDiaMm: 10, // মিমি
+    mainSpacingInch: 5, // ইঞ্চি
+    distSpacingInch: 5, // ইঞ্চি
+    extraTopShortSpacingInch: 5,
+    extraTopLongSpacingInch: 5,
     criticalAreaRatio: 4,
-    unit: "FEET" as "FEET" | "METER",
   });
 
   // ========================================================
-  // এক্সেল শিট থেকে প্রাপ্ত নিখুঁত গাণিতিক লজিক (Calculation Logic)
+  // এক্সেল ও ইঞ্জিনিয়ারিং মান অনুযায়ী সঠিক গাণিতিক লজিক
   // ========================================================
 
   // ক) Wall Calculation
   const calculateWall = () => {
-    const wetVolume = wallInputs.length * wallInputs.height * wallInputs.thickness;
-    const dryVolume = wetVolume * 0.35;
-    const totalRatio = wallInputs.cementRatio + wallInputs.sandRatio || 1;
+    const len = Number(wallInputs.length) || 0;
+    const hgt = Number(wallInputs.height) || 0;
+    const thkFt = (Number(wallInputs.thicknessInch) || 0) / 12; // ইঞ্চিকে ফুটে রূপান্তর
 
-    const cementNeededCft = (dryVolume / totalRatio) * wallInputs.cementRatio;
-    const cementBags = cementNeededCft / 0.8;
-    const sandNeededCft = (dryVolume / totalRatio) * wallInputs.sandRatio;
-    const brickNeededPcs = wetVolume / 0.086;
+    const wetVolume = len * hgt * thkFt;
+    const dryVolume = wetVolume * 0.35;
+    
+    const cRatio = Number(wallInputs.cementRatio) || 1;
+    const sRatio = Number(wallInputs.sandRatio) || 4;
+    const totalRatio = cRatio + sRatio || 1;
+
+    const cementCft = (dryVolume / totalRatio) * cRatio;
+    const cementBags = cementCft / 0.8;
+    const sandCft = (dryVolume / totalRatio) * sRatio;
+    const brickPcs = wetVolume / 0.086;
 
     return {
       wetVolume: wetVolume.toFixed(2),
       dryVolume: dryVolume.toFixed(2),
-      cementBags: Math.ceil(cementBags),
-      sandCft: Math.round(sandNeededCft),
-      brickPcs: Math.round(brickNeededPcs),
+      cementBags: Math.ceil(cementBags) || 0,
+      sandCft: Math.round(sandCft) || 0,
+      brickPcs: Math.round(brickPcs) || 0,
     };
   };
 
   // খ) Concrete Calculation
   const calculateConcrete = () => {
-    const wetVolume = concreteInputs.length * concreteInputs.width * concreteInputs.thickness;
-    const dryVolume = wetVolume * 1.54;
-    const totalRatio =
-      concreteInputs.cementRatio + concreteInputs.sandRatio + concreteInputs.aggregateRatio || 1;
+    const len = Number(concreteInputs.length) || 0;
+    const wid = Number(concreteInputs.width) || 0;
+    const thkFt = (Number(concreteInputs.thicknessInch) || 0) / 12; // ইঞ্চিকে ফুটে রূপান্তর
 
-    const cementNeededCft = (dryVolume / totalRatio) * concreteInputs.cementRatio;
-    const cementBags = cementNeededCft / 0.8;
-    const sandNeededCft = (dryVolume / totalRatio) * concreteInputs.sandRatio;
-    const aggregateNeededCft = (dryVolume / totalRatio) * concreteInputs.aggregateRatio;
+    const wetVolume = len * wid * thkFt;
+    const dryVolume = wetVolume * 1.54;
+
+    const cRatio = Number(concreteInputs.cementRatio) || 1;
+    const sRatio = Number(concreteInputs.sandRatio) || 2;
+    const aRatio = Number(concreteInputs.aggregateRatio) || 4;
+    const totalRatio = cRatio + sRatio + aRatio || 1;
+
+    const cementCft = (dryVolume / totalRatio) * cRatio;
+    const cementBags = cementCft / 0.8;
+    const sandCft = (dryVolume / totalRatio) * sRatio;
+    const aggregateCft = (dryVolume / totalRatio) * aRatio;
 
     return {
       wetVolume: wetVolume.toFixed(2),
       dryVolume: dryVolume.toFixed(2),
-      cementBags: Math.ceil(cementBags),
-      sandCft: Math.round(sandNeededCft),
-      aggregateCft: Math.round(aggregateNeededCft),
+      cementBags: Math.ceil(cementBags) || 0,
+      sandCft: Math.round(sandCft) || 0,
+      aggregateCft: Math.round(aggregateCft) || 0,
     };
   };
 
   // গ) Slab Reinforcement Calculation
   const calculateSlab = () => {
-    const mainBarsCount =
-      slabInputs.mainSpacing > 0 ? slabInputs.length / slabInputs.mainSpacing + 1 : 0;
-    const distBarsCount =
-      slabInputs.distSpacing > 0 ? slabInputs.breadth / slabInputs.distSpacing + 1 : 0;
+    const lenFt = Number(slabInputs.lengthFt) || 0;
+    const brdFt = Number(slabInputs.breadthFt) || 0;
+    const dia = Number(slabInputs.rodDiaMm) || 0;
 
-    const mainBarLength = slabInputs.breadth * mainBarsCount;
-    const distBarLength = slabInputs.length * distBarsCount;
+    const mainSpIn = Number(slabInputs.mainSpacingInch) || 1;
+    const distSpIn = Number(slabInputs.distSpacingInch) || 1;
 
-    const numExtraTopShort =
-      slabInputs.extraTopShortSpacing > 0 ? slabInputs.length / slabInputs.extraTopShortSpacing + 1 : 0;
-    const numExtraTopLong =
-      slabInputs.extraTopLongSpacing > 0 ? slabInputs.breadth / slabInputs.extraTopLongSpacing + 1 : 0;
+    // ফুট থেকে ইঞ্চিতে পরিবর্তন করে বার গণনা
+    const lenInches = lenFt * 12;
+    const brdInches = brdFt * 12;
 
-    const shortExtraTopLength =
-      slabInputs.criticalAreaRatio > 0
-        ? (slabInputs.length / slabInputs.criticalAreaRatio) * numExtraTopShort
-        : 0;
-    const longExtraTopLength =
-      slabInputs.criticalAreaRatio > 0
-        ? (slabInputs.breadth / slabInputs.criticalAreaRatio) * numExtraTopLong
-        : 0;
+    const mainBarsCount = mainSpIn > 0 ? (lenInches / mainSpIn) + 1 : 0;
+    const distBarsCount = distSpIn > 0 ? (brdInches / distSpIn) + 1 : 0;
 
-    const totalLength = mainBarLength + distBarLength + shortExtraTopLength + longExtraTopLength;
+    const mainBarTotalLengthFt = (brdFt * mainBarsCount);
+    const distBarTotalLengthFt = (lenFt * distBarsCount);
 
-    let totalWeightKg = 0;
-    if (slabInputs.unit === "FEET") {
-      totalWeightKg = (slabInputs.rodDiaMm * slabInputs.rodDiaMm * totalLength) / 532.2;
-    } else {
-      totalWeightKg = (slabInputs.rodDiaMm * slabInputs.rodDiaMm * totalLength) / 162.2;
-    }
+    const extraTopShortSp = Number(slabInputs.extraTopShortSpacingInch) || 1;
+    const extraTopLongSp = Number(slabInputs.extraTopLongSpacingInch) || 1;
+    const critRatio = Number(slabInputs.criticalAreaRatio) || 4;
+
+    const numExtraTopShort = extraTopShortSp > 0 ? (lenInches / extraTopShortSp) + 1 : 0;
+    const numExtraTopLong = extraTopLongSp > 0 ? (brdInches / extraTopLongSp) + 1 : 0;
+
+    const shortExtraTopLengthFt = (lenFt / critRatio) * numExtraTopShort;
+    const longExtraTopLengthFt = (brdFt / critRatio) * numExtraTopLong;
+
+    const totalLengthFt = mainBarTotalLengthFt + distBarTotalLengthFt + shortExtraTopLengthFt + longExtraTopLengthFt;
+
+    // রডের ওজন (কেজি) সূত্র: (Dia^2 * LengthInFeet) / 532.2
+    const totalWeightKg = (dia * dia * totalLengthFt) / 532.2;
 
     return {
-      mainBarsCount: Math.round(mainBarsCount),
-      distBarsCount: Math.round(distBarsCount),
-      totalLength: Math.round(totalLength),
-      totalWeightKg: totalWeightKg.toFixed(2),
+      mainBarsCount: Math.round(mainBarsCount) || 0,
+      distBarsCount: Math.round(distBarsCount) || 0,
+      totalLengthFt: Math.round(totalLengthFt) || 0,
+      totalWeightKg: isNaN(totalWeightKg) ? "0.00" : totalWeightKg.toFixed(2),
     };
   };
 
@@ -150,7 +164,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Tab Selection Navigation */}
+        {/* Tab Navigation */}
         <div className="flex bg-slate-900 p-1.5 rounded-xl border border-slate-800">
           <button
             onClick={() => setActiveTab("wall")}
@@ -187,7 +201,7 @@ export default function Home() {
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* Inputs Section */}
+          {/* Inputs */}
           <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-4 backdrop-blur-sm">
             <h2 className="text-xl font-semibold border-b border-slate-800 pb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-blue-500"></span>
@@ -218,12 +232,11 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Thickness (ft)</label>
+                  <label className="text-xs text-slate-400">Thickness (inches - e.g. 5 or 10)</label>
                   <input
                     type="number"
-                    step="0.01"
-                    value={wallInputs.thickness}
-                    onChange={(e) => setWallInputs({ ...wallInputs, thickness: Number(e.target.value) })}
+                    value={wallInputs.thicknessInch}
+                    onChange={(e) => setWallInputs({ ...wallInputs, thicknessInch: Number(e.target.value) })}
                     className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                   />
                 </div>
@@ -272,18 +285,17 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Thickness (ft)</label>
+                  <label className="text-xs text-slate-400">Thickness (inches - e.g. 5)</label>
                   <input
                     type="number"
-                    step="0.01"
-                    value={concreteInputs.thickness}
-                    onChange={(e) => setConcreteInputs({ ...concreteInputs, thickness: Number(e.target.value) })}
+                    value={concreteInputs.thicknessInch}
+                    onChange={(e) => setConcreteInputs({ ...concreteInputs, thicknessInch: Number(e.target.value) })}
                     className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-xs text-slate-400">Cement Ratio</label>
+                    <label className="text-xs text-slate-400">Cement</label>
                     <input
                       type="number"
                       value={concreteInputs.cementRatio}
@@ -292,7 +304,7 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Sand Ratio</label>
+                    <label className="text-xs text-slate-400">Sand</label>
                     <input
                       type="number"
                       value={concreteInputs.sandRatio}
@@ -301,7 +313,7 @@ export default function Home() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Aggregate Ratio</label>
+                    <label className="text-xs text-slate-400">Aggregate</label>
                     <input
                       type="number"
                       value={concreteInputs.aggregateRatio}
@@ -313,67 +325,54 @@ export default function Home() {
               </div>
             )}
 
-            {/* Slab Reinforcement Inputs */}
+            {/* Slab Inputs */}
             {activeTab === "slab" && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400">Length</label>
+                    <label className="text-xs text-slate-400">Length (ft)</label>
                     <input
                       type="number"
-                      value={slabInputs.length}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, length: Number(e.target.value) })}
+                      value={slabInputs.lengthFt}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, lengthFt: Number(e.target.value) })}
                       className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Breadth</label>
+                    <label className="text-xs text-slate-400">Breadth (ft)</label>
                     <input
                       type="number"
-                      value={slabInputs.breadth}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, breadth: Number(e.target.value) })}
+                      value={slabInputs.breadthFt}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, breadthFt: Number(e.target.value) })}
                       className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-slate-400">Rod Dia (mm)</label>
-                    <input
-                      type="number"
-                      value={slabInputs.rodDiaMm}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, rodDiaMm: Number(e.target.value) })}
-                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs text-slate-400">Unit Type</label>
-                    <select
-                      value={slabInputs.unit}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, unit: e.target.value as "FEET" | "METER" })}
-                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
-                    >
-                      <option value="FEET">Feet</option>
-                      <option value="METER">Meter</option>
-                    </select>
-                  </div>
+                <div>
+                  <label className="text-xs text-slate-400">Rod Dia (mm)</label>
+                  <input
+                    type="number"
+                    value={slabInputs.rodDiaMm}
+                    onChange={(e) => setSlabInputs({ ...slabInputs, rodDiaMm: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400">Main Spacing</label>
+                    <label className="text-xs text-slate-400">Main Spacing (inches)</label>
                     <input
                       type="number"
-                      value={slabInputs.mainSpacing}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, mainSpacing: Number(e.target.value) })}
+                      value={slabInputs.mainSpacingInch}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, mainSpacingInch: Number(e.target.value) })}
                       className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Distribution Spacing</label>
+                    <label className="text-xs text-slate-400">Dist Spacing (inches)</label>
                     <input
                       type="number"
-                      value={slabInputs.distSpacing}
-                      onChange={(e) => setSlabInputs({ ...slabInputs, distSpacing: Number(e.target.value) })}
+                      value={slabInputs.distSpacingInch}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, distSpacingInch: Number(e.target.value) })}
                       className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
                     />
                   </div>
@@ -382,7 +381,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* Results Output Section */}
+          {/* Results Output */}
           <div className="bg-slate-900/90 p-6 rounded-2xl border border-blue-900/40 space-y-6 flex flex-col justify-between shadow-xl shadow-blue-950/20">
             <div>
               <h2 className="text-xl font-semibold border-b border-slate-800 pb-3 flex items-center justify-between">
@@ -436,7 +435,7 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Slab Reinforcement Results */}
+              {/* Slab Results */}
               {activeTab === "slab" && (
                 <div className="mt-6 space-y-4">
                   <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
@@ -451,7 +450,7 @@ export default function Home() {
                     <span className="text-blue-300 text-sm font-medium">Total Rod Weight:</span>
                     <span className="text-2xl font-black text-blue-400">{slabRes.totalWeightKg} <span className="text-xs font-normal text-slate-300">kg</span></span>
                   </div>
-                  <p className="text-xs text-slate-500 pt-1">• Total Rod Length: {slabRes.totalLength} {slabInputs.unit.toLowerCase()}</p>
+                  <p className="text-xs text-slate-500 pt-1">• Total Rod Length: {slabRes.totalLengthFt} ft</p>
                 </div>
               )}
             </div>
