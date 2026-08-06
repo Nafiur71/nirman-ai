@@ -1,0 +1,471 @@
+"use client";
+
+import React, { useState } from "react";
+import { Calculator, FileText, Layers, Building2 } from "lucide-react";
+
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<"wall" | "concrete" | "slab">("wall");
+
+  // ১. ওয়াল এস্টিমেশন স্টেট (Wall Estimate Inputs)
+  const [wallInputs, setWallInputs] = useState({
+    length: 20,
+    height: 10,
+    thickness: 0.41, // Feet
+    cementRatio: 2,
+    sandRatio: 4,
+  });
+
+  // ২. কংক্রিট/ছাদ ঢালাই স্টেট (Concrete Estimate Inputs)
+  const [concreteInputs, setConcreteInputs] = useState({
+    length: 20,
+    width: 15,
+    thickness: 0.41, // Feet
+    cementRatio: 1,
+    sandRatio: 2,
+    aggregateRatio: 4,
+  });
+
+  // ৩. রড হিসাবের স্টেট (Slab Reinforcement Inputs)
+  const [slabInputs, setSlabInputs] = useState({
+    length: 420, // mm or inches based on excel
+    breadth: 420,
+    rodDiaMm: 10,
+    mainSpacing: 5,
+    distSpacing: 5,
+    extraTopShortSpacing: 5,
+    extraTopLongSpacing: 5,
+    criticalAreaRatio: 4,
+    unit: "FEET" as "FEET" | "METER",
+  });
+
+  // ========================================================
+  // এক্সেল শিট থেকে প্রাপ্ত নিখুঁত গাণিতিক লজিক (Calculation Logic)
+  // ========================================================
+
+  // ক) Wall Calculation
+  const calculateWall = () => {
+    const wetVolume = wallInputs.length * wallInputs.height * wallInputs.thickness;
+    const dryVolume = wetVolume * 0.35;
+    const totalRatio = wallInputs.cementRatio + wallInputs.sandRatio || 1;
+
+    const cementNeededCft = (dryVolume / totalRatio) * wallInputs.cementRatio;
+    const cementBags = cementNeededCft / 0.8;
+    const sandNeededCft = (dryVolume / totalRatio) * wallInputs.sandRatio;
+    const brickNeededPcs = wetVolume / 0.086;
+
+    return {
+      wetVolume: wetVolume.toFixed(2),
+      dryVolume: dryVolume.toFixed(2),
+      cementBags: Math.ceil(cementBags),
+      sandCft: Math.round(sandNeededCft),
+      brickPcs: Math.round(brickNeededPcs),
+    };
+  };
+
+  // খ) Concrete Calculation
+  const calculateConcrete = () => {
+    const wetVolume = concreteInputs.length * concreteInputs.width * concreteInputs.thickness;
+    const dryVolume = wetVolume * 1.54;
+    const totalRatio =
+      concreteInputs.cementRatio + concreteInputs.sandRatio + concreteInputs.aggregateRatio || 1;
+
+    const cementNeededCft = (dryVolume / totalRatio) * concreteInputs.cementRatio;
+    const cementBags = cementNeededCft / 0.8;
+    const sandNeededCft = (dryVolume / totalRatio) * concreteInputs.sandRatio;
+    const aggregateNeededCft = (dryVolume / totalRatio) * concreteInputs.aggregateRatio;
+
+    return {
+      wetVolume: wetVolume.toFixed(2),
+      dryVolume: dryVolume.toFixed(2),
+      cementBags: Math.ceil(cementBags),
+      sandCft: Math.round(sandNeededCft),
+      aggregateCft: Math.round(aggregateNeededCft),
+    };
+  };
+
+  // গ) Slab Reinforcement Calculation
+  const calculateSlab = () => {
+    const mainBarsCount =
+      slabInputs.mainSpacing > 0 ? slabInputs.length / slabInputs.mainSpacing + 1 : 0;
+    const distBarsCount =
+      slabInputs.distSpacing > 0 ? slabInputs.breadth / slabInputs.distSpacing + 1 : 0;
+
+    const mainBarLength = slabInputs.breadth * mainBarsCount;
+    const distBarLength = slabInputs.length * distBarsCount;
+
+    const numExtraTopShort =
+      slabInputs.extraTopShortSpacing > 0 ? slabInputs.length / slabInputs.extraTopShortSpacing + 1 : 0;
+    const numExtraTopLong =
+      slabInputs.extraTopLongSpacing > 0 ? slabInputs.breadth / slabInputs.extraTopLongSpacing + 1 : 0;
+
+    const shortExtraTopLength =
+      slabInputs.criticalAreaRatio > 0
+        ? (slabInputs.length / slabInputs.criticalAreaRatio) * numExtraTopShort
+        : 0;
+    const longExtraTopLength =
+      slabInputs.criticalAreaRatio > 0
+        ? (slabInputs.breadth / slabInputs.criticalAreaRatio) * numExtraTopLong
+        : 0;
+
+    const totalLength = mainBarLength + distBarLength + shortExtraTopLength + longExtraTopLength;
+
+    let totalWeightKg = 0;
+    if (slabInputs.unit === "FEET") {
+      totalWeightKg = (slabInputs.rodDiaMm * slabInputs.rodDiaMm * totalLength) / 532.2;
+    } else {
+      totalWeightKg = (slabInputs.rodDiaMm * slabInputs.rodDiaMm * totalLength) / 162.2;
+    }
+
+    return {
+      mainBarsCount: Math.round(mainBarsCount),
+      distBarsCount: Math.round(distBarsCount),
+      totalLength: Math.round(totalLength),
+      totalWeightKg: totalWeightKg.toFixed(2),
+    };
+  };
+
+  const wallRes = calculateWall();
+  const concreteRes = calculateConcrete();
+  const slabRes = calculateSlab();
+
+  return (
+    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
+      <div className="max-w-5xl mx-auto space-y-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-6 gap-4">
+          <div>
+            <span className="text-xs bg-blue-900/50 text-blue-400 px-3 py-1 rounded-full border border-blue-700/50 font-medium">
+              ✨ AI-Powered Estimation
+            </span>
+            <h1 className="text-4xl font-extrabold mt-2 tracking-tight">
+              Nirman <span className="text-blue-500">AI</span>
+            </h1>
+            <p className="text-slate-400 text-sm mt-1">
+              Smart Construction Cost Estimator & Material Calculator
+            </p>
+          </div>
+          <p className="text-xs text-slate-500 italic">
+            Plan Better. <span className="text-blue-400 font-semibold">Build Smarter.</span> Save More.
+          </p>
+        </div>
+
+        {/* Tab Selection Navigation */}
+        <div className="flex bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+          <button
+            onClick={() => setActiveTab("wall")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
+              activeTab === "wall"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Building2 className="w-4 h-4" /> Wall Estimate
+          </button>
+          <button
+            onClick={() => setActiveTab("concrete")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
+              activeTab === "concrete"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Layers className="w-4 h-4" /> Concrete Slab
+          </button>
+          <button
+            onClick={() => setActiveTab("slab")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm transition-all ${
+              activeTab === "slab"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Calculator className="w-4 h-4" /> Slab Reinforcement
+          </button>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* Inputs Section */}
+          <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-4 backdrop-blur-sm">
+            <h2 className="text-xl font-semibold border-b border-slate-800 pb-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+              {activeTab === "wall" && "Wall Parameters"}
+              {activeTab === "concrete" && "Slab Parameters"}
+              {activeTab === "slab" && "Rebar Details"}
+            </h2>
+
+            {/* Wall Inputs */}
+            {activeTab === "wall" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs text-slate-400">Length (ft)</label>
+                  <input
+                    type="number"
+                    value={wallInputs.length}
+                    onChange={(e) => setWallInputs({ ...wallInputs, length: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Height (ft)</label>
+                  <input
+                    type="number"
+                    value={wallInputs.height}
+                    onChange={(e) => setWallInputs({ ...wallInputs, height: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Thickness (ft)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={wallInputs.thickness}
+                    onChange={(e) => setWallInputs({ ...wallInputs, thickness: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400">Cement Ratio</label>
+                    <input
+                      type="number"
+                      value={wallInputs.cementRatio}
+                      onChange={(e) => setWallInputs({ ...wallInputs, cementRatio: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Sand Ratio</label>
+                    <input
+                      type="number"
+                      value={wallInputs.sandRatio}
+                      onChange={(e) => setWallInputs({ ...wallInputs, sandRatio: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Concrete Inputs */}
+            {activeTab === "concrete" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs text-slate-400">Length (ft)</label>
+                  <input
+                    type="number"
+                    value={concreteInputs.length}
+                    onChange={(e) => setConcreteInputs({ ...concreteInputs, length: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Width (ft)</label>
+                  <input
+                    type="number"
+                    value={concreteInputs.width}
+                    onChange={(e) => setConcreteInputs({ ...concreteInputs, width: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-400">Thickness (ft)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={concreteInputs.thickness}
+                    onChange={(e) => setConcreteInputs({ ...concreteInputs, thickness: Number(e.target.value) })}
+                    className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="text-xs text-slate-400">Cement Ratio</label>
+                    <input
+                      type="number"
+                      value={concreteInputs.cementRatio}
+                      onChange={(e) => setConcreteInputs({ ...concreteInputs, cementRatio: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Sand Ratio</label>
+                    <input
+                      type="number"
+                      value={concreteInputs.sandRatio}
+                      onChange={(e) => setConcreteInputs({ ...concreteInputs, sandRatio: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Aggregate Ratio</label>
+                    <input
+                      type="number"
+                      value={concreteInputs.aggregateRatio}
+                      onChange={(e) => setConcreteInputs({ ...concreteInputs, aggregateRatio: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Slab Reinforcement Inputs */}
+            {activeTab === "slab" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400">Length</label>
+                    <input
+                      type="number"
+                      value={slabInputs.length}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, length: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Breadth</label>
+                    <input
+                      type="number"
+                      value={slabInputs.breadth}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, breadth: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400">Rod Dia (mm)</label>
+                    <input
+                      type="number"
+                      value={slabInputs.rodDiaMm}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, rodDiaMm: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Unit Type</label>
+                    <select
+                      value={slabInputs.unit}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, unit: e.target.value as "FEET" | "METER" })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    >
+                      <option value="FEET">Feet</option>
+                      <option value="METER">Meter</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400">Main Spacing</label>
+                    <input
+                      type="number"
+                      value={slabInputs.mainSpacing}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, mainSpacing: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Distribution Spacing</label>
+                    <input
+                      type="number"
+                      value={slabInputs.distSpacing}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, distSpacing: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Results Output Section */}
+          <div className="bg-slate-900/90 p-6 rounded-2xl border border-blue-900/40 space-y-6 flex flex-col justify-between shadow-xl shadow-blue-950/20">
+            <div>
+              <h2 className="text-xl font-semibold border-b border-slate-800 pb-3 flex items-center justify-between">
+                <span>Calculated Estimation</span>
+                <span className="text-xs font-normal bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full">
+                  Excel Standard
+                </span>
+              </h2>
+
+              {/* Wall Results */}
+              {activeTab === "wall" && (
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Brick Needed:</span>
+                    <span className="text-2xl font-bold text-blue-400">{wallRes.brickPcs} <span className="text-xs font-normal text-slate-400">Pcs</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Cement Needed:</span>
+                    <span className="text-2xl font-bold text-blue-400">{wallRes.cementBags} <span className="text-xs font-normal text-slate-400">Bags</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Sand Needed:</span>
+                    <span className="text-2xl font-bold text-blue-400">{wallRes.sandCft} <span className="text-xs font-normal text-slate-400">cft</span></span>
+                  </div>
+                  <div className="text-xs text-slate-500 pt-2 space-y-1">
+                    <p>• Wet Volume: {wallRes.wetVolume} cft</p>
+                    <p>• Dry Volume (0.35 factor): {wallRes.dryVolume} cft</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Concrete Results */}
+              {activeTab === "concrete" && (
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Cement Needed:</span>
+                    <span className="text-2xl font-bold text-blue-400">{concreteRes.cementBags} <span className="text-xs font-normal text-slate-400">Bags</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Sand Needed:</span>
+                    <span className="text-2xl font-bold text-blue-400">{concreteRes.sandCft} <span className="text-xs font-normal text-slate-400">cft</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Aggregate / Khowa:</span>
+                    <span className="text-2xl font-bold text-blue-400">{concreteRes.aggregateCft} <span className="text-xs font-normal text-slate-400">cft</span></span>
+                  </div>
+                  <div className="text-xs text-slate-500 pt-2 space-y-1">
+                    <p>• Wet Volume: {concreteRes.wetVolume} cft</p>
+                    <p>• Dry Volume (1.54 factor): {concreteRes.dryVolume} cft</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Slab Reinforcement Results */}
+              {activeTab === "slab" && (
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Main Bars Count:</span>
+                    <span className="text-xl font-bold text-white">{slabRes.mainBarsCount} <span className="text-xs font-normal text-slate-400">pcs</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <span className="text-slate-400 text-sm">Distribution Bars Count:</span>
+                    <span className="text-xl font-bold text-white">{slabRes.distBarsCount} <span className="text-xs font-normal text-slate-400">pcs</span></span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-blue-950/40 rounded-xl border border-blue-800/50">
+                    <span className="text-blue-300 text-sm font-medium">Total Rod Weight:</span>
+                    <span className="text-2xl font-black text-blue-400">{slabRes.totalWeightKg} <span className="text-xs font-normal text-slate-300">kg</span></span>
+                  </div>
+                  <p className="text-xs text-slate-500 pt-1">• Total Rod Length: {slabRes.totalLength} {slabInputs.unit.toLowerCase()}</p>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => window.print()}
+              className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 border border-slate-700 transition-all"
+            >
+              <FileText className="w-4 h-4" /> Download PDF Report
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  );
+}
