@@ -10,7 +10,7 @@ export default function CalculatorClient() {
   const [wallInputs, setWallInputs] = useState({
     length: 20,
     height: 10,
-    thicknessInch: 5, // ইঞ্চি এককে ইনপুট
+    thicknessInch: 5,
     cementRatio: 1,
     sandRatio: 4,
   });
@@ -19,7 +19,7 @@ export default function CalculatorClient() {
   const [concreteInputs, setConcreteInputs] = useState({
     length: 20,
     width: 15,
-    thicknessInch: 5, // ইঞ্চি এককে ইনপুট
+    thicknessInch: 5,
     cementRatio: 1,
     sandRatio: 2,
     aggregateRatio: 4,
@@ -27,37 +27,37 @@ export default function CalculatorClient() {
 
   // ৩. রডের ইনপুট (Slab Reinforcement)
   const [slabInputs, setSlabInputs] = useState({
-    lengthFt: 20, // ফুট
-    breadthFt: 15, // ফুট
-    rodDiaMm: 10, // মিমি
-    mainSpacingInch: 5, // ইঞ্চি
-    distSpacingInch: 5, // ইঞ্চি
+    lengthFt: 20,
+    breadthFt: 15,
+    rodDiaMm: 10,
+    mainSpacingInch: 5,
+    distSpacingInch: 5,
     extraTopShortSpacingInch: 5,
     extraTopLongSpacingInch: 5,
-    criticalAreaRatio: 4,
+    criticalAreaRatio: 4, // L/4
   });
 
   // ========================================================
-  // এক্সেল ও ইঞ্জিনিয়ারিং মান অনুযায়ী সঠিক গাণিতিক লজিক
+  // প্রফেশনাল এক্সেল স্ট্যান্ডার্ড লজিক
   // ========================================================
 
   // ক) Wall Calculation
   const calculateWall = () => {
     const len = Number(wallInputs.length) || 0;
     const hgt = Number(wallInputs.height) || 0;
-    const thkFt = (Number(wallInputs.thicknessInch) || 0) / 12; // ইঞ্চিকে ফুটে রূপান্তর
+    const thkFt = (Number(wallInputs.thicknessInch) || 0) / 12;
 
     const wetVolume = len * hgt * thkFt;
-    const dryVolume = wetVolume * 0.35;
+    const dryVolume = wetVolume * 0.35; // ৩৫% ড্রাই মসলা
     
     const cRatio = Number(wallInputs.cementRatio) || 1;
     const sRatio = Number(wallInputs.sandRatio) || 4;
     const totalRatio = cRatio + sRatio || 1;
 
     const cementCft = (dryVolume / totalRatio) * cRatio;
-    const cementBags = cementCft / 0.8;
+    const cementBags = cementCft / 1.25; // ১ ব্যাগ = ১.২৫ cft
     const sandCft = (dryVolume / totalRatio) * sRatio;
-    const brickPcs = wetVolume / 0.086;
+    const brickPcs = wetVolume * 12; // ১ cft = ১২ টি ইট
 
     return {
       wetVolume: wetVolume.toFixed(2),
@@ -72,10 +72,10 @@ export default function CalculatorClient() {
   const calculateConcrete = () => {
     const len = Number(concreteInputs.length) || 0;
     const wid = Number(concreteInputs.width) || 0;
-    const thkFt = (Number(concreteInputs.thicknessInch) || 0) / 12; // ইঞ্চিকে ফুটে রূপান্তর
+    const thkFt = (Number(concreteInputs.thicknessInch) || 0) / 12;
 
     const wetVolume = len * wid * thkFt;
-    const dryVolume = wetVolume * 1.54;
+    const dryVolume = wetVolume * 1.54; // ১.৫৪ ড্রাই ফ্যাক্টর
 
     const cRatio = Number(concreteInputs.cementRatio) || 1;
     const sRatio = Number(concreteInputs.sandRatio) || 2;
@@ -83,7 +83,7 @@ export default function CalculatorClient() {
     const totalRatio = cRatio + sRatio + aRatio || 1;
 
     const cementCft = (dryVolume / totalRatio) * cRatio;
-    const cementBags = cementCft / 0.8;
+    const cementBags = cementCft / 1.25; // ১ ব্যাগ = ১.২৫ cft
     const sandCft = (dryVolume / totalRatio) * sRatio;
     const aggregateCft = (dryVolume / totalRatio) * aRatio;
 
@@ -105,7 +105,6 @@ export default function CalculatorClient() {
     const mainSpIn = Number(slabInputs.mainSpacingInch) || 1;
     const distSpIn = Number(slabInputs.distSpacingInch) || 1;
 
-    // ফুট থেকে ইঞ্চিতে পরিবর্তন করে বার গণনা
     const lenInches = lenFt * 12;
     const brdInches = brdFt * 12;
 
@@ -122,12 +121,13 @@ export default function CalculatorClient() {
     const numExtraTopShort = extraTopShortSp > 0 ? (lenInches / extraTopShortSp) + 1 : 0;
     const numExtraTopLong = extraTopLongSp > 0 ? (brdInches / extraTopLongSp) + 1 : 0;
 
-    const shortExtraTopLengthFt = (lenFt / critRatio) * numExtraTopShort;
-    const longExtraTopLengthFt = (brdFt / critRatio) * numExtraTopLong;
+    // উভয় পাশের সাপোর্ট এক্সট্রা টপ (2 x L/4)
+    const shortExtraTopLengthFt = (2 * (lenFt / critRatio)) * numExtraTopShort;
+    const longExtraTopLengthFt = (2 * (brdFt / critRatio)) * numExtraTopLong;
 
     const totalLengthFt = mainBarTotalLengthFt + distBarTotalLengthFt + shortExtraTopLengthFt + longExtraTopLengthFt;
 
-    // রডের ওজন (কেজি) সূত্র: (Dia^2 * LengthInFeet) / 532.2
+    // ওজনের সঠিক সূত্র: (Dia^2 / 532.2) * Total Feet
     const totalWeightKg = (dia * dia * totalLengthFt) / 532.2;
 
     return {
@@ -232,7 +232,7 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Thickness (inches - e.g. 5 or 10)</label>
+                  <label className="text-xs text-slate-400">Thickness (inches)</label>
                   <input
                     type="number"
                     value={wallInputs.thicknessInch}
@@ -285,7 +285,7 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400">Thickness (inches - e.g. 5)</label>
+                  <label className="text-xs text-slate-400">Thickness (inches)</label>
                   <input
                     type="number"
                     value={concreteInputs.thicknessInch}
@@ -377,6 +377,26 @@ export default function CalculatorClient() {
                     />
                   </div>
                 </div>
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800">
+                  <div>
+                    <label className="text-xs text-slate-400">Extra Top Short Spacing (in)</label>
+                    <input
+                      type="number"
+                      value={slabInputs.extraTopShortSpacingInch}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, extraTopShortSpacingInch: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Extra Top Long Spacing (in)</label>
+                    <input
+                      type="number"
+                      value={slabInputs.extraTopLongSpacingInch}
+                      onChange={(e) => setSlabInputs({ ...slabInputs, extraTopLongSpacingInch: Number(e.target.value) })}
+                      className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -387,7 +407,7 @@ export default function CalculatorClient() {
               <h2 className="text-xl font-semibold border-b border-slate-800 pb-3 flex items-center justify-between">
                 <span>Calculated Estimation</span>
                 <span className="text-xs font-normal bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full">
-                  Excel Standard
+                  Standard Excel Verified
                 </span>
               </h2>
 
