@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 // 🚀 2. Enhanced Advanced SEO Metadata for AdSense Approval
 export const metadata: Metadata = {
   title: {
-    default: "Nirman AI - Construction Cost & Material Calculator",
+    default: "Nirman AI - Construction Material Calculator",
     template: "%s | Nirman AI",
   },
   description:
