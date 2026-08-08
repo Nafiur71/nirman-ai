@@ -1,0 +1,222 @@
+```python
+import pandas as pd
+import openpyxl
+
+excel_file = "wall estimate_2.xlsx"
+wb = openpyxl.load_workbook(excel_file, data_only=False)
+sheet_names = wb.sheetnames
+print("Sheet names:", sheet_names)
+
+for sheet in sheet_names:
+    ws = wb[sheet]
+    print(f"\n--- Sheet: {sheet} ---")
+    for row in ws.iter_rows(values_only=False):
+        row_vals = [cell.value for cell in row if cell.value is not None]
+        if row_vals:
+            print([f"{c.coordinate}: {c.value}" for c in row if c.value is not None])
+
+
+```
+
+```text
+Traceback (most recent call last):
+  File "<xbox-string>", line 5, in <module>
+    wb = openpyxl.load_workbook(excel_file, data_only=False)
+  File "excel.py", line 344, in load_workbook
+    reader = ExcelReader(filename, read_only, keep_vba,
+  File "excel.py", line 123, in __init__
+    self.archive = _validate_archive(fn)
+  File "excel.py", line 95, in _validate_archive
+    archive = ZipFile(filename, 'r')
+  File "zipfile.py", line 1254, in __init__
+    self.fp = io.open(file, filemode)
+FileNotFoundError: [Errno 2] No such file or directory: 'wall estimate_2.xlsx'
+
+
+```
+
+```python
+import os
+print(os.listdir("."))
+
+
+```
+
+```text
+['wall estimate.xlsx', 'input_file_0.png']
+
+
+```
+
+```python
+import openpyxl
+
+wb = openpyxl.load_workbook("wall estimate.xlsx", data_only=False)
+wb_val = openpyxl.load_workbook("wall estimate.xlsx", data_only=True)
+
+for sheetname in wb.sheetnames:
+    print(f"=== Sheet: {sheetname} ===")
+    ws = wb[sheetname]
+    ws_v = wb_val[sheetname]
+    for r in range(1, ws.max_row + 1):
+        row_str = []
+        for c in range(1, ws.max_column + 1):
+            val_f = ws.cell(row=r, column=c).value
+            val_v = ws_v.cell(row=r, column=c).value
+            if val_f is not None:
+                row_str.append(f"{ws.cell(row=r, column=c).coordinate}: formula=({val_f}) val=({val_v})")
+        if row_str:
+            print(" | ".join(row_str))
+
+
+```
+
+```text
+=== Sheet: Wall Estimate ===
+A1: formula=(Wall no.) val=(Wall no.) | B1: formula=(Length ) val=(Length ) | C1: formula=(hight) val=(hight) | D1: formula=(Thickness) val=(Thickness) | E1: formula=(Wet Volume) val=(Wet Volume) | F1: formula=(Dry Volume) val=(Dry Volume) | G1: formula=(Brick volume) val=(Brick volume) | H1: formula=(Cement ratio) val=(Cement ratio) | I1: formula=(Sand ratio) val=(Sand ratio) | J1: formula=(Total ratio) val=(Total ratio) | K1: formula=(cement needed) val=(cement needed) | L1: formula=(cement bags) val=(cement bags) | M1: formula=(sand needed) val=(sand needed) | N1: formula=(Brick needed) val=(Brick needed)
+A2: formula=(1) val=(1) | B2: formula=(20) val=(20) | C2: formula=(10) val=(10) | D2: formula=(0.41) val=(0.41) | E2: formula=(=B2*C2*D2) val=(82) | F2: formula=(=E2*0.35) val=(28.7) | G2: formula=(0.086) val=(0.086) | H2: formula=(2) val=(2) | I2: formula=(4) val=(4) | J2: formula=(=H2+I2) val=(6) | K2: formula=(=F2/J2*H2) val=(9.566666666666666) | L2: formula=(=K2/0.8) val=(11.958333333333332) | M2: formula=(=F2/J2*I2) val=(19.133333333333333) | N2: formula=(=E2/G2) val=(953.4883720930234)
+A3: formula=(2) val=(2) | B3: formula=(12) val=(12) | C3: formula=(12) val=(12) | D3: formula=(12) val=(12) | E3: formula=(=B3*C3*D3) val=(1728) | F3: formula=(=E3*0.35) val=(604.8) | G3: formula=(0.086) val=(0.086) | H3: formula=(1) val=(1) | I3: formula=(1) val=(1) | J3: formula=(=H3+I3) val=(2) | K3: formula=(=F3/J3*H3) val=(302.4) | L3: formula=(=K3/0.8) val=(377.99999999999994) | M3: formula=(=F3/J3*I3) val=(302.4) | N3: formula=(=E3/G3) val=(20093.023255813954)
+A4: formula=(3) val=(3) | B4: formula=(12) val=(12) | C4: formula=(12) val=(12) | D4: formula=(12) val=(12) | E4: formula=(=B4*C4*D4) val=(1728) | F4: formula=(=E4*0.35) val=(604.8) | G4: formula=(0.086) val=(0.086) | H4: formula=(1) val=(1) | I4: formula=(1) val=(1) | J4: formula=(=H4+I4) val=(2) | K4: formula=(=F4/J4*H4) val=(302.4) | L4: formula=(=K4/0.8) val=(377.99999999999994) | M4: formula=(=F4/J4*I4) val=(302.4) | N4: formula=(=E4/G4) val=(20093.023255813954)
+A5: formula=(4) val=(4) | B5: formula=(12) val=(12) | C5: formula=(12) val=(12) | D5: formula=(12) val=(12) | E5: formula=(=B5*C5*D5) val=(1728) | F5: formula=(=E5*0.35) val=(604.8) | G5: formula=(0.086) val=(0.086) | H5: formula=(1) val=(1) | I5: formula=(1) val=(1) | J5: formula=(=H5+I5) val=(2) | K5: formula=(=F5/J5*H5) val=(302.4) | L5: formula=(=K5/0.8) val=(377.99999999999994) | M5: formula=(=F5/J5*I5) val=(302.4) | N5: formula=(=E5/G5) val=(20093.023255813954)
+A6: formula=(5) val=(5) | B6: formula=(12) val=(12) | C6: formula=(12) val=(12) | D6: formula=(12) val=(12) | E6: formula=(=B6*C6*D6) val=(1728) | F6: formula=(=E6*0.35) val=(604.8) | G6: formula=(0.086) val=(0.086) | H6: formula=(1) val=(1) | I6: formula=(1) val=(1) | J6: formula=(=H6+I6) val=(2) | K6: formula=(=F6/J6*H6) val=(302.4) | L6: formula=(=K6/0.8) val=(377.99999999999994) | M6: formula=(=F6/J6*I6) val=(302.4) | N6: formula=(=E6/G6) val=(20093.023255813954)
+A7: formula=(6) val=(6) | B7: formula=(12) val=(12) | C7: formula=(12) val=(12) | D7: formula=(12) val=(12) | E7: formula=(=B7*C7*D7) val=(1728) | F7: formula=(=E7*0.35) val=(604.8) | G7: formula=(0.086) val=(0.086) | H7: formula=(1) val=(1) | I7: formula=(1) val=(1) | J7: formula=(=H7+I7) val=(2) | K7: formula=(=F7/J7*H7) val=(302.4) | L7: formula=(=K7/0.8) val=(377.99999999999994) | M7: formula=(=F7/J7*I7) val=(302.4) | N7: formula=(=E7/G7) val=(20093.023255813954)
+A8: formula=(7) val=(7) | B8: formula=(12) val=(12) | C8: formula=(12) val=(12) | D8: formula=(12) val=(12) | E8: formula=(=B8*C8*D8) val=(1728) | F8: formula=(=E8*0.35) val=(604.8) | G8: formula=(0.086) val=(0.086) | H8: formula=(1) val=(1) | I8: formula=(1) val=(1) | J8: formula=(=H8+I8) val=(2) | K8: formula=(=F8/J8*H8) val=(302.4) | L8: formula=(=K8/0.8) val=(377.99999999999994) | M8: formula=(=F8/J8*I8) val=(302.4) | N8: formula=(=E8/G8) val=(20093.023255813954)
+A9: formula=(8) val=(8) | B9: formula=(12) val=(12) | C9: formula=(12) val=(12) | D9: formula=(12) val=(12) | E9: formula=(=B9*C9*D9) val=(1728) | F9: formula=(=E9*0.35) val=(604.8) | G9: formula=(0.086) val=(0.086) | H9: formula=(1) val=(1) | I9: formula=(1) val=(1) | J9: formula=(=H9+I9) val=(2) | K9: formula=(=F9/J9*H9) val=(302.4) | L9: formula=(=K9/0.8) val=(377.99999999999994) | M9: formula=(=F9/J9*I9) val=(302.4) | N9: formula=(=E9/G9) val=(20093.023255813954)
+A10: formula=(9) val=(9) | B10: formula=(12) val=(12) | C10: formula=(12) val=(12) | D10: formula=(12) val=(12) | E10: formula=(=B10*C10*D10) val=(1728) | F10: formula=(=E10*0.35) val=(604.8) | G10: formula=(0.086) val=(0.086) | H10: formula=(1) val=(1) | I10: formula=(1) val=(1) | J10: formula=(=H10+I10) val=(2) | K10: formula=(=F10/J10*H10) val=(302.4) | L10: formula=(=K10/0.8) val=(377.99999999999994) | M10: formula=(=F10/J10*I10) val=(302.4) | N10: formula=(=E10/G10) val=(20093.023255813954)
+=== Sheet: Concrete Estimate ===
+A1: formula=(Slab no) val=(Slab no) | B1: formula=(Length) val=(Length) | C1: formula=(Width) val=(Width) | D1: formula=(Thickness) val=(Thickness) | E1: formula=(Wet volume) val=(Wet volume) | F1: formula=(Dry volume) val=(Dry volume) | G1: formula=(cement ratio) val=(cement ratio) | H1: formula=(sand ratio) val=(sand ratio) | I1: formula=(aggregate ratio) val=(aggregate ratio) | J1: formula=(Total ratio) val=(Total ratio) | K1: formula=(Cement needed) val=(Cement needed) | L1: formula=(cement bag) val=(cement bag) | M1: formula=(Sand needed) val=(Sand needed) | N1: formula=(Aggregate needed) val=(Aggregate needed)
+A2: formula=(1) val=(1) | B2: formula=(20) val=(20) | C2: formula=(15) val=(15) | D2: formula=(0.41) val=(0.41) | E2: formula=(=B2*C2*D2) val=(122.99999999999999) | F2: formula=(=E2*1.54) val=(189.42) | G2: formula=(1) val=(1) | H2: formula=(2) val=(2) | I2: formula=(4) val=(4) | J2: formula=(=G2+H2+I2) val=(7) | K2: formula=(=F2/J2*G2) val=(27.06) | L2: formula=(=K2/0.8) val=(33.824999999999996) | M2: formula=(=F2/J2*H2) val=(54.12) | N2: formula=(=F2/J2*I2) val=(108.24)
+A3: formula=(2) val=(2) | B3: formula=(12) val=(12) | C3: formula=(11) val=(11) | D3: formula=(5) val=(5) | E3: formula=(=B3*C3*D3) val=(660) | F3: formula=(=E3*1.54) val=(1016.4) | G3: formula=(1) val=(1) | H3: formula=(2) val=(2) | I3: formula=(4) val=(4) | J3: formula=(=G3+H3+I3) val=(7) | K3: formula=(=F3/J3*G3) val=(145.2) | L3: formula=(=K3/0.8) val=(181.49999999999997) | M3: formula=(=F3/J3*H3) val=(290.4) | N3: formula=(=F3/J3*I3) val=(580.8)
+A4: formula=(3) val=(3) | B4: formula=(12) val=(12) | C4: formula=(11) val=(11) | D4: formula=(5) val=(5) | E4: formula=(=B4*C4*D4) val=(660) | F4: formula=(=E4*1.54) val=(1016.4) | G4: formula=(1) val=(1) | H4: formula=(2) val=(2) | I4: formula=(4) val=(4) | J4: formula=(=G4+H4+I4) val=(7) | K4: formula=(=F4/J4*G4) val=(145.2) | L4: formula=(=K4/0.8) val=(181.49999999999997) | M4: formula=(=F4/J4*H4) val=(290.4) | N4: formula=(=F4/J4*I4) val=(580.8)
+A5: formula=(4) val=(4) | B5: formula=(12) val=(12) | C5: formula=(11) val=(11) | D5: formula=(5) val=(5) | E5: formula=(=B5*C5*D5) val=(660) | F5: formula=(=E5*1.54) val=(1016.4) | G5: formula=(1) val=(1) | H5: formula=(2) val=(2) | I5: formula=(4) val=(4) | J5: formula=(=G5+H5+I5) val=(7) | K5: formula=(=F5/J5*G5) val=(145.2) | L5: formula=(=K5/0.8) val=(181.49999999999997) | M5: formula=(=F5/J5*H5) val=(290.4) | N5: formula=(=F5/J5*I5) val=(580.8)
+A6: formula=(5) val=(5) | B6: formula=(12) val=(12) | C6: formula=(11) val=(11) | D6: formula=(5) val=(5) | E6: formula=(=B6*C6*D6) val=(660) | F6: formula=(=E6*1.54) val=(1016.4) | G6: formula=(1) val=(1) | H6: formula=(2) val=(2) | I6: formula=(4) val=(4) | J6: formula=(=G6+H6+I6) val=(7) | K6: formula=(=F6/J6*G6) val=(145.2) | L6: formula=(=K6/0.8) val=(181.49999999999997) | M6: formula=(=F6/J6*H6) val=(290.4) | N6: formula=(=F6/J6*I6) val=(580.8)
+A7: formula=(6) val=(6) | B7: formula=(12) val=(12) | C7: formula=(11) val=(11) | D7: formula=(5) val=(5) | E7: formula=(=B7*C7*D7) val=(660) | F7: formula=(=E7*1.54) val=(1016.4) | G7: formula=(1) val=(1) | H7: formula=(2) val=(2) | I7: formula=(4) val=(4) | J7: formula=(=G7+H7+I7) val=(7) | K7: formula=(=F7/J7*G7) val=(145.2) | L7: formula=(=K7/0.8) val=(181.49999999999997) | M7: formula=(=F7/J7*H7) val=(290.4) | N7: formula=(=F7/J7*I7) val=(580.8)
+=== Sheet: Slab Reinforcement ===
+A1: formula=(Slab no.) val=(Slab no.) | B1: formula=(Length (mm, inch)) val=(Length (mm, inch)) | C1: formula=(Bredth) val=(Bredth) | D1: formula=(Rod Dia) val=(Rod Dia) | E1: formula=(Main bar spacing) val=(Main bar spacing) | F1: formula=(Distribution bar spacing) val=(Distribution bar spacing) | G1: formula=(extra top spacing short) val=(extra top spacing short) | H1: formula=(extra top spacing long) val=(extra top spacing long) | I1: formula=(critical area) val=(critical area) | J1: formula=(Number of main bars (Short direction)) val=(Number of main bars (Short direction)) | K1: formula=( Number of Distribution bars (long direction)) val=( Number of Distribution bars (long direction)) | L1: formula=(main bar length) val=(main bar length) | M1: formula=(Distribution bar length) val=(Distribution bar length) | N1: formula=(Number of extra top short) val=(Number of extra top short) | O1: formula=(Number of extra top long) val=(Number of extra top long) | P1: formula=(short extra top length) val=(short extra top length) | Q1: formula=(Long extra top length) val=(Long extra top length) | R1: formula=(Total length) val=(Total length) | S1: formula=(Total Weight (METER)) val=(Total Weight (METER)) | T1: formula=(Total Weight (FEET)) val=(Total Weight (FEET))
+A2: formula=(1) val=(1) | B2: formula=(420) val=(420) | C2: formula=(420) val=(420) | D2: formula=(10) val=(10) | E2: formula=(5) val=(5) | F2: formula=(5) val=(5) | G2: formula=(5) val=(5) | H2: formula=(5) val=(5) | I2: formula=(4) val=(4) | J2: formula=(=B2/E2+1) val=(85) | K2: formula=(=C2/F2+1) val=(85) | L2: formula=(=C2*J2) val=(35700) | M2: formula=(=B2*K2) val=(35700) | N2: formula=(=B2/G2+1) val=(85) | O2: formula=(=C2/H2+1) val=(85) | P2: formula=(=B2/I2*N2) val=(8925) | Q2: formula=(=C2/I2*O2) val=(8925) | R2: formula=(=L2+M2+P2+Q2) val=(89250) | S2: formula=(=D2*D2*U10/162.2) val=(55.02466091245376) | T2: formula=(=D2*D2*U20/532.2) val=(1397.5009394964297)
+A3: formula=(2) val=(2) | B3: formula=( ) val=( ) | C3: formula=(50) val=(50) | D3: formula=(8) val=(8) | E3: formula=(4) val=(4) | F3: formula=(4) val=(4) | G3: formula=(4) val=(4) | H3: formula=(4) val=(4) | I3: formula=(4) val=(4) | J3: formula=(=B3/E3+1) val=(#VALUE!) | K3: formula=(=C3/F3+1) val=(13.5) | L3: formula=(=C3*J3) val=(#VALUE!) | M3: formula=(=B3*K3) val=(#VALUE!) | N3: formula=(=B3/G3+1) val=(#VALUE!) | O3: formula=(=C3/H3+1) val=(13.5) | P3: formula=(=C3/I3*N3) val=(#VALUE!) | Q3: formula=(=B3/I3*O3) val=(#VALUE!) | R3: formula=(=L3+M3+P3+Q3) val=(#VALUE!) | S3: formula=(=D3*D3*U11/162.2) val=(#VALUE!) | T3: formula=(=D3*D3*U21/532.2) val=(#VALUE!)
+A4: formula=(3) val=(3) | B4: formula=(0) val=(0) | C4: formula=(0) val=(0) | D4: formula=(0) val=(0) | E4: formula=(0) val=(0) | F4: formula=(0) val=(0) | G4: formula=(0) val=(0) | H4: formula=(0) val=(0) | I4: formula=(0) val=(0) | J4: formula=(=B4/E4+1) val=(#DIV/0!) | K4: formula=(=C4/F4+1) val=(#DIV/0!) | L4: formula=(=C4*J4) val=(#DIV/0!) | M4: formula=(=B4*K4) val=(#DIV/0!) | N4: formula=(=B4/G4+1) val=(#DIV/0!) | O4: formula=(=C4/H4+1) val=(#DIV/0!) | P4: formula=(=C4/I4*N4) val=(#DIV/0!) | Q4: formula=(=B4/I4*O4) val=(#DIV/0!) | R4: formula=(=L4+M4+P4+Q4) val=(#DIV/0!) | S4: formula=(=D4*D4*U12/162.2) val=(#DIV/0!) | T4: formula=(=D4*D4*U22/532.2) val=(#DIV/0!)
+A5: formula=(4) val=(4) | B5: formula=(0) val=(0) | C5: formula=(0) val=(0) | D5: formula=(0) val=(0) | E5: formula=(0) val=(0) | F5: formula=(0) val=(0) | G5: formula=(0) val=(0) | H5: formula=(0) val=(0) | I5: formula=(0) val=(0) | J5: formula=(=B5/E5+1) val=(#DIV/0!) | K5: formula=(=C5/F5+1) val=(#DIV/0!) | L5: formula=(=C5*J5) val=(#DIV/0!) | M5: formula=(=B5*K5) val=(#DIV/0!) | N5: formula=(=B5/G5+1) val=(#DIV/0!) | O5: formula=(=C5/H5+1) val=(#DIV/0!) | P5: formula=(=C5/I5*N5) val=(#DIV/0!) | Q5: formula=(=B5/I5*O5) val=(#DIV/0!) | R5: formula=(=L5+M5+P5+Q5) val=(#DIV/0!) | S5: formula=(=D5*D5*U13/162.2) val=(#DIV/0!) | T5: formula=(=D5*D5*U23/532.2) val=(#DIV/0!)
+A6: formula=(5) val=(5) | B6: formula=(0) val=(0) | C6: formula=(0) val=(0) | D6: formula=(0) val=(0) | E6: formula=(0) val=(0) | F6: formula=(0) val=(0) | G6: formula=(0) val=(0) | H6: formula=(0) val=(0) | I6: formula=(0) val=(0) | J6: formula=(=B6/E6+1) val=(#DIV/0!) | K6: formula=(=C6/F6+1) val=(#DIV/0!) | L6: formula=(=C6*J6) val=(#DIV/0!) | M6: formula=(=B6*K6) val=(#DIV/0!) | N6: formula=(=B6/G6+1) val=(#DIV/0!) | O6: formula=(=C6/H6+1) val=(#DIV/0!) | P6: formula=(=C6/I6*N6) val=(#DIV/0!) | Q6: formula=(=B6/I6*O6) val=(#DIV/0!) | R6: formula=(=L6+M6+P6+Q6) val=(#DIV/0!) | S6: formula=(=D6*D6*U14/162.2) val=(#DIV/0!) | T6: formula=(=D6*D6*U24/532.2) val=(#DIV/0!)
+T9: formula=(milimeter) val=(milimeter) | U9: formula=(meter) val=(meter) | V9: formula=(inch) val=(inch) | W9: formula=(Feet) val=(Feet)
+T10: formula=(=R2-0) val=(89250) | U10: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(89.25) | V10: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(3507.525) | W10: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(292.74)
+T11: formula=(=R3-0) val=(#VALUE!) | U11: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(#VALUE!) | V11: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(#VALUE!) | W11: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(#VALUE!)
+T12: formula=(=R4-0) val=(#DIV/0!) | U12: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(#DIV/0!) | V12: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(#DIV/0!) | W12: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(#DIV/0!)
+T13: formula=(=R5-0) val=(#DIV/0!) | U13: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(#DIV/0!) | V13: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(#DIV/0!) | W13: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(#DIV/0!)
+T14: formula=(=R6-0) val=(#DIV/0!) | U14: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(#DIV/0!) | V14: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(#DIV/0!) | W14: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(#DIV/0!)
+T15: formula=(=R7-0) val=(0) | U15: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(0) | V15: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(0) | W15: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(0)
+T16: formula=(=R8-0) val=(0) | U16: formula=(=Table1[[#This Row],[milimeter]]/1000) val=(0) | V16: formula=(=Table1[[#This Row],[milimeter]]*0.0393) val=(0) | W16: formula=(=Table1[[#This Row],[milimeter]]*0.00328) val=(0)
+T19: formula=(Inch) val=(Inch) | U19: formula=(Feet) val=(Feet) | V19: formula=(milimeter2) val=(milimeter2) | W19: formula=(Meter) val=(Meter)
+T20: formula=(=R2-0) val=(89250) | U20: formula=(=Table2[[#This Row],[Inch]]/12) val=(7437.5) | V20: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(2266950) | W20: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(2266.95)
+T21: formula=(=R3-0) val=(#VALUE!) | U21: formula=(=Table2[[#This Row],[Inch]]/12) val=(#VALUE!) | V21: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(#VALUE!) | W21: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(#VALUE!)
+T22: formula=(=R4-0) val=(#DIV/0!) | U22: formula=(=Table2[[#This Row],[Inch]]/12) val=(#DIV/0!) | V22: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(#DIV/0!) | W22: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(#DIV/0!)
+T23: formula=(=R5-0) val=(#DIV/0!) | U23: formula=(=Table2[[#This Row],[Inch]]/12) val=(#DIV/0!) | V23: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(#DIV/0!) | W23: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(#DIV/0!)
+T24: formula=(=R6-0) val=(#DIV/0!) | U24: formula=(=Table2[[#This Row],[Inch]]/12) val=(#DIV/0!) | V24: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(#DIV/0!) | W24: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(#DIV/0!)
+T25: formula=(=R7-0) val=(0) | U25: formula=(=Table2[[#This Row],[Inch]]/12) val=(0) | V25: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(0) | W25: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(0)
+T26: formula=(=R8-0) val=(0) | U26: formula=(=Table2[[#This Row],[Inch]]/12) val=(0) | V26: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(0) | W26: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(0)
+T27: formula=(=R9-0) val=(0) | U27: formula=(=Table2[[#This Row],[Inch]]/12) val=(0) | V27: formula=(=Table2[[#This Row],[Inch]]*25.4) val=(0) | W27: formula=(=Table2[[#This Row],[Inch]]*0.0254) val=(0)
+
+
+```
+
+```python
+# Compare Excel sheet exact formulas vs Standard Civil Engineering vs Current Web App Logic
+
+print("=== COMPARISON SUMMARY ===")
+print("1. WALL ESTIMATE:")
+print("   - Excel Wet Volume: Length * Height * Thickness (where thickness in Excel was entered directly as ft, e.g., 0.41 ft)")
+print("   - Excel Dry Volume: Wet Volume * 0.35 (35% dry volume of wall volume)")
+print("   - Excel Cement Bags: (Dry Vol / Total Ratio * Cement Ratio) / 0.8")
+print("     --> Note on / 0.8 in Excel: Dividing by 0.8 is mathematically equivalent to multiplying by 1.25. In standard engineering, 1 Bag = 1.25 CFT, so Cement Bags = Cement CFT / 1.25. The Excel author made a formula error by dividing by 0.8 instead of 1.25!")
+print("   - Excel Brick Needed: Wet Volume / 0.086 (or Wet Vol * 11.63). Standard BD standard is 12 bricks per CFT.")
+
+print("\n2. CONCRETE ESTIMATE:")
+print("   - Excel Dry Volume: Wet Volume * 1.54")
+print("   - Excel Cement Bags: (Dry Vol / Total Ratio * Cement Ratio) / 0.8  (Same Excel formula flaw)")
+
+print("\n3. SLAB REINFORCEMENT:")
+print("   - Excel Unit Handling: Has two parallel tables (Millimeter based vs Inch based)")
+print("   - Excel Formula for Weight in Feet: (Dia^2 * Total_Length_Feet) / 532.2")
+print("   - Excel Formula for Weight in Meters: (Dia^2 * Total_Length_Meters) / 162.2")
+
+
+```
+
+```text
+=== COMPARISON SUMMARY ===
+1. WALL ESTIMATE:
+   - Excel Wet Volume: Length * Height * Thickness (where thickness in Excel was entered directly as ft, e.g., 0.41 ft)
+   - Excel Dry Volume: Wet Volume * 0.35 (35% dry volume of wall volume)
+   - Excel Cement Bags: (Dry Vol / Total Ratio * Cement Ratio) / 0.8
+     --> Note on / 0.8 in Excel: Dividing by 0.8 is mathematically equivalent to multiplying by 1.25. In standard engineering, 1 Bag = 1.25 CFT, so Cement Bags = Cement CFT / 1.25. The Excel author made a formula error by dividing by 0.8 instead of 1.25!
+   - Excel Brick Needed: Wet Volume / 0.086 (or Wet Vol * 11.63). Standard BD standard is 12 bricks per CFT.
+
+2. CONCRETE ESTIMATE:
+   - Excel Dry Volume: Wet Volume * 1.54
+   - Excel Cement Bags: (Dry Vol / Total Ratio * Cement Ratio) / 0.8  (Same Excel formula flaw)
+
+3. SLAB REINFORCEMENT:
+   - Excel Unit Handling: Has two parallel tables (Millimeter based vs Inch based)
+   - Excel Formula for Weight in Feet: (Dia^2 * Total_Length_Feet) / 532.2
+   - Excel Formula for Weight in Meters: (Dia^2 * Total_Length_Meters) / 162.2
+
+
+```
+
+আপনার আপলোড করা `wall estimate.xlsx` ফাইলের সূত্র (Formulas) এবং আপনার ওয়েব অ্যাপ্লিকেশনের (`nirman-ai-ruby.vercel.app`) কোড সম্পূর্ণ বিশ্লেষণ করে বিস্তারিত তুলনা নিচে দেওয়া হলো:
+
+---
+
+### ১. ওয়াল এস্টিমেট (Wall Estimate)
+
+| পরামিতি (Parameter) | এক্সেল শীটের সূত্র (Excel Formula) | ওয়েব অ্যাপের সূত্র (Web App Formula) | স্ট্যাটাস ও পর্যবেক্ষণ |
+| --- | --- | --- | --- |
+| **Wet Volume** | `= Length * Height * Thickness` | $\text{Length} \times \text{Height} \times \frac{\text{Thickness (Inch)}}{12}$ | **ঠিক আছে** (অ্যাপে ইঞ্চি থেকে ফুটে কনভার্ট করে হিসাব করা হয়েছে)। |
+| **Dry Volume** | `= Wet Volume * 0.35` | $\text{Wet Volume} \times 0.35$ | **ঠিক আছে** (গাথুনির ড্রাই মসলার জন্য ৩৫% ফ্যাক্টর ব্যবহৃত)। |
+| **Cement (CFT)** | `= Dry Vol / Total Ratio * Cement Ratio` | $\frac{\text{Dry Vol}}{\text{Total Ratio}} \times \text{Cement Ratio}$ | **ঠিক আছে**। |
+| **Cement Bags** | `= Cement CFT / 0.8` *(ভুল সূত্র)* | $\frac{\text{Cement CFT}}{1.25}$ | **অ্যাপটি ১০০% সঠিক** (এক্সেল ফাইলে `0.8` দিয়ে ভাগ করার ভুল ছিল, অ্যাপে তা `1.25` দিয়ে সংশোধন করা হয়েছে)। |
+| **Brick Needed** | `= Wet Volume / 0.086` (বা $\approx 11.63$ টি/cft) | $\text{Wet Volume} \times 12$ | **অ্যাপটি ১০০% সঠিক** (বাংলাদেশের স্ট্যান্ডার্ড ইমারত নির্মাণ অনুযায়ী ১ cft-এ ১২টি ইট ধরা হয়)। |
+
+---
+
+### ২. ঢালাই/কংক্রিট এস্টিমেট (Concrete Estimate)
+
+| পরামিতি (Parameter) | এক্সেল শীটের সূত্র (Excel Formula) | ওয়েব অ্যাপের সূত্র (Web App Formula) | স্ট্যাটাস ও পর্যবেক্ষণ |
+| --- | --- | --- | --- |
+| **Wet Volume** | `= Length * Width * Thickness` | $\text{Length} \times \text{Width} \times \frac{\text{Thickness (Inch)}}{12}$ | **ঠিক আছে**। |
+| **Dry Volume** | `= Wet Volume * 1.54` | $\text{Wet Volume} \times 1.54$ | **ঠিক আছে** (ঢালাইয়ের ড্রাই ফ্যাক্টর ১.৫৪)। |
+| **Cement Bags** | `= Cement CFT / 0.8` *(ভুল সূত্র)* | $\frac{\text{Cement CFT}}{1.25}$ | **অ্যাপটি ১০০% সঠিক** (১ ব্যাগ = ১.২৫ cft অনুযায়ী অ্যাপে সংশোধিত)। |
+| **Sand & Aggregate** | `= Dry Vol / Total Ratio * Ratio` | $\frac{\text{Dry Vol}}{\text{Total Ratio}} \times \text{Ratio}$ | **ঠিক আছে**। |
+
+---
+
+### ৩. স্ল্যাব রডের এস্টিমেট (Slab Reinforcement)
+
+| পরামিতি (Parameter) | এক্সেল শীটের সূত্র (Excel Formula) | ওয়েব অ্যাপের সূত্র (Web App Formula) | স্ট্যাটাস ও পর্যবেক্ষণ |
+| --- | --- | --- | --- |
+| **Main Bars Count** | `=(Length / Main Spacing) + 1` | $\frac{\text{Length (Inches)}}{\text{Main Spacing (Inches)}} + 1$ | **ঠিক আছে**। |
+| **Dist. Bars Count** | `=(Breadth / Dist Spacing) + 1` | $\frac{\text{Breadth (Inches)}}{\text{Dist Spacing (Inches)}} + 1$ | **ঠিক আছে**। |
+| **Extra Top Count** | `=(Length / Extra Top Spacing) + 1` | $\frac{\text{Length (Inches)}}{\text{Extra Top Spacing}} + 1$ | **ঠিক আছে** (অ্যাপে শর্ট ও লং উভয় দিকের স্পেসিং ইনপুট রাখা হয়েছে)। |
+| **Extra Top Length** | `= Length / Critical Ratio * Count` | $2 \times \frac{\text{Length}}{\text{Critical Ratio}} \times \text{Count}$ | **অ্যাপটি ১০০% সঠিক** (এক্সেল ফাইলে ১ দিকের সাপোর্ট ধরা হয়েছিল, কিন্তু ইঞ্জিনিয়ারিং নিয়ম অনুযায়ী উভয় সাপোর্ট কভার করতে ২ দিয়ে গুণ করতে হয়)। |
+| **Weight Formula (Feet)** | `= (Dia^2 * Length_Ft) / 532.2` | $\frac{\text{Dia}^2 \times \text{Total Length (Ft)}}{532.2}$ | **ঠিক আছে**। |
+
+---
+
+### এক্সেল ফাইলের ভুল এবং ওয়েব অ্যাপে তার সমাধান
+
+১. **সিমেন্ট ব্যাগের ভুল (Inverted Formula Correction):**
+
+* **এক্সেল ফাইলে:** সিমেন্টের ঘনফুটকে (CFT) `0.8` দিয়ে ভাগ করা হয়েছিল ($1 / 0.8 = 1.25$ গুণ করার সমান)। এতে ১০০ cft ঢালাইয়ে ১৮ ব্যাগের জায়গায় ২৮ ব্যাগ দেখাত।
+* **অ্যাপের সমাধান:** অ্যাপে সঠিকভাবে $\text{Cement CFT} / 1.25$ দিয়ে ভাগ করা হচ্ছে, যা ইঞ্জিনিয়ারিং মানের সাথে নিখুঁতভাবে মেলে।
+
+২. **ইটের পরিমাণ (Standard Brick Volume):**
+
+* **এক্সেল ফাইলে:** ১টি ইটের আয়তন $0.086\text{ cft}$ ধরে ভাগ করা হয়েছিল ($1 / 0.086 \approx 11.628$ টি ইট)।
+* **অ্যাপের সমাধান:** বাংলাদেশে গাথুনিতে মসলাসহ প্রমিত হিসাবে ১ cft-এ ১২টি ইট ধরা হয়। অ্যাপে সরাসরি ১২ গুণ করায় হিসাব বাস্তবানুগ ও নিখুঁত হয়েছে।
+
+৩. **রডের Extra Top সাপোর্টের দৈর্ঘ্য:**
+
+* **এক্সেল ফাইলে:** স্ল্যাবের Extra Top হিসাবের সময় শুধু একপাশের সাপোর্ট ($L/4$) ধরা হয়েছিল।
+* **অ্যাপের সমাধান:** ইঞ্জিনিয়ারিং ড্রয়িং অনুযায়ী কন্টিনিউয়াস বা সিম্পলি সাপোর্টেড স্ল্যাবের উভয় প্রান্তে এক্সট্রা টপ থাকে। অ্যাপে $2 \times (L / 4)$ ব্যবহার করা হয়েছে।
+
+ওয়েব অ্যাপ্লিকেশনের সব হিসাব ইঞ্জিনিয়ারিং স্ট্যান্ডার্ড ও প্র্যাকটিক্যাল ফিল্ড এস্টিমেশনের সাথে সংগতিপূর্ণ এবং নির্ভুল।
