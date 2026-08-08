@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calculator, FileText, Layers, Building2, Printer } from "lucide-react";
+import { Calculator, FileText, Layers, Building2, Printer, MoreVertical } from "lucide-react";
 
 export default function CalculatorClient() {
   const [activeTab, setActiveTab] = useState<"wall" | "concrete" | "slab">("wall");
+  
+  // ⚡ মোবাইলে ৩-ডট ড্রপডাউন মেনুর জন্য স্টেট
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // ⚡ Hydration Error দূর করার জন্য এই ২টি নতুন স্টেট যোগ করুন
+  // ⚡ Hydration Error দূর করার জন্য এই ২টি নতুন স্টেট
   const [docId, setDocId] = useState<string>("");
   const [currentDate, setCurrentDate] = useState<string>("");
 
-  // ⚡ এই useEffect ব্লকটি যুক্ত করুন
   useEffect(() => {
     setDocId(`NAI-${Math.floor(100000 + Math.random() * 900000)}`);
     setCurrentDate(new Date().toLocaleDateString());
@@ -48,7 +50,7 @@ export default function CalculatorClient() {
   });
 
   // ========================================================
-  // প্রফেশনাল এক্সেল স্ট্যান্ডার্ড লজিক (১০০% অপরিবর্তিত)
+  // প্রফেশনাল এক্সেল স্ট্যান্ডার্ড লজিক
   // ========================================================
 
   // ক) Wall Calculation
@@ -131,13 +133,11 @@ export default function CalculatorClient() {
     const numExtraTopShort = extraTopShortSp > 0 ? (lenInches / extraTopShortSp) + 1 : 0;
     const numExtraTopLong = extraTopLongSp > 0 ? (brdInches / extraTopLongSp) + 1 : 0;
 
-    // উভয় পাশের সাপোর্ট এক্সট্রা টপ (2 x L/4)
     const shortExtraTopLengthFt = (2 * (lenFt / critRatio)) * numExtraTopShort;
     const longExtraTopLengthFt = (2 * (brdFt / critRatio)) * numExtraTopLong;
 
     const totalLengthFt = mainBarTotalLengthFt + distBarTotalLengthFt + shortExtraTopLengthFt + longExtraTopLengthFt;
 
-    // ওজনের সঠিক সূত্র: (Dia^2 / 532.2) * Total Feet
     const totalWeightKg = (dia * dia * totalLengthFt) / 532.2;
 
     return {
@@ -153,14 +153,14 @@ export default function CalculatorClient() {
   const slabRes = calculateSlab();
 
   return (
-    <main className="relative min-h-screen bg-[#030712] text-slate-100 p-4 md:p-8 font-sans overflow-hidden selection:bg-cyan-500 selection:text-black">
+    <main className="relative min-h-screen bg-[#030712] text-slate-100 p-4 md:p-8 font-sans overflow-x-hidden selection:bg-cyan-500 selection:text-black">
 
       {/* 1. Deep Navy & Ambient Lighting Glows */}
       <div className="print:hidden absolute -top-40 -right-40 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px] pointer-events-none"></div>
       <div className="print:hidden absolute top-1/3 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-[128px] pointer-events-none"></div>
       <div className="print:hidden absolute -bottom-40 right-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-[128px] pointer-events-none"></div>
 
-      {/* 2. Architectural Blueprint Grid Overlay (Low Opacity) */}
+      {/* 2. Architectural Blueprint Grid Overlay */}
       <div
         className="print:hidden absolute inset-0 opacity-[0.06] pointer-events-none"
         style={{
@@ -192,41 +192,93 @@ export default function CalculatorClient() {
           </p>
         </div>
 
-        {/* 3. Glassmorphic Tab Navigation */}
-        <div className="flex bg-slate-900/60 backdrop-blur-xl p-1.5 rounded-2xl border border-slate-800/80 shadow-2xl">
-          <button
-            onClick={() => setActiveTab("wall")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "wall"
-              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-              }`}
-          >
-            <Building2 className="w-4 h-4" /> Wall Estimate
-          </button>
-          <button
-            onClick={() => setActiveTab("concrete")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "concrete"
-              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-              }`}
-          >
-            <Layers className="w-4 h-4" /> Concrete Slab
-          </button>
-          <button
-            onClick={() => setActiveTab("slab")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "slab"
-              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-              }`}
-          >
-            <Calculator className="w-4 h-4" /> Slab Reinforcement
-          </button>
+        {/* 3. Clean Fixed Responsive Navigation */}
+        <div className="relative">
+          {/* 🖥️ ডেস্কটপ নেভিগেশন (md এবং বড় স্ক্রিনের জন্য) */}
+          <div className="hidden md:flex bg-slate-900/60 backdrop-blur-xl p-1.5 rounded-2xl border border-slate-800/80 shadow-2xl">
+            <button
+              onClick={() => setActiveTab("wall")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "wall"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                }`}
+            >
+              <Building2 className="w-4 h-4" /> Wall Estimate
+            </button>
+            <button
+              onClick={() => setActiveTab("concrete")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "concrete"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                }`}
+            >
+              <Layers className="w-4 h-4" /> Concrete Slab
+            </button>
+            <button
+              onClick={() => setActiveTab("slab")}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "slab"
+                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                }`}
+            >
+              <Calculator className="w-4 h-4" /> Slab Reinforcement
+            </button>
+          </div>
+
+          {/* 📱 মোবাইল নেভিগেশন (ছোট স্ক্রিনের জন্য - কোনো ওভারল্যাপ হবে না) */}
+          <div className="md:hidden relative">
+            <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-xl p-1.5 rounded-2xl border border-slate-800/80 shadow-2xl">
+              <div className="flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-medium text-sm rounded-xl shadow-lg shadow-cyan-500/25">
+                {activeTab === "wall" && <><Building2 className="w-4 h-4" /> Wall Estimate</>}
+                {activeTab === "concrete" && <><Layers className="w-4 h-4" /> Concrete Slab</>}
+                {activeTab === "slab" && <><Calculator className="w-4 h-4" /> Slab Reinforcement</>}
+              </div>
+
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-3 bg-slate-800/80 text-slate-300 hover:text-white rounded-xl border border-slate-700/80 transition-all"
+                aria-label="Toggle Menu"
+              >
+                <MoreVertical className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* ড্রপডাউন মেনু */}
+            {isMenuOpen && (
+              <div className="absolute left-0 right-0 top-16 bg-slate-900/95 backdrop-blur-2xl border border-slate-800 rounded-2xl shadow-2xl z-50 p-2 space-y-1">
+                <button
+                  onClick={() => { setActiveTab("wall"); setIsMenuOpen(false); }}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
+                    activeTab === "wall" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                  }`}
+                >
+                  <Building2 className="w-4 h-4" /> Wall Estimate
+                </button>
+                <button
+                  onClick={() => { setActiveTab("concrete"); setIsMenuOpen(false); }}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
+                    activeTab === "concrete" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                  }`}
+                >
+                  <Layers className="w-4 h-4" /> Concrete Slab
+                </button>
+                <button
+                  onClick={() => { setActiveTab("slab"); setIsMenuOpen(false); }}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
+                    activeTab === "slab" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                  }`}
+                >
+                  <Calculator className="w-4 h-4" /> Slab Reinforcement
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-          {/* Inputs Card - Glassmorphism */}
+          {/* Inputs Card */}
           <div className="bg-slate-900/40 backdrop-blur-xl p-6 rounded-2xl border border-slate-800/80 space-y-4 shadow-xl">
             <h2 className="text-xl font-semibold border-b border-slate-800/80 pb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
@@ -239,9 +291,7 @@ export default function CalculatorClient() {
             {activeTab === "wall" && (
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="wall-length" className="text-xs text-slate-400 font-medium">
-                    Length (ft)
-                  </label>
+                  <label htmlFor="wall-length" className="text-xs text-slate-400 font-medium">Length (ft)</label>
                   <input
                     id="wall-length"
                     type="number"
@@ -446,10 +496,8 @@ export default function CalculatorClient() {
             )}
           </div>
 
-          {/* Results Output Card - Glassmorphism & Ambient Glow */}
+          {/* Results Output Card */}
           <div className="bg-slate-900/40 backdrop-blur-xl p-6 rounded-2xl border border-cyan-500/20 space-y-6 flex flex-col justify-between shadow-2xl shadow-cyan-950/30 relative overflow-hidden">
-
-            {/* Subtle glow inside card */}
             <div className="absolute -top-16 -right-16 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <div>
@@ -535,12 +583,8 @@ export default function CalculatorClient() {
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 4. REDESIGNED PROFESSIONAL PRINT / PDF BLUEPRINT LAYOUT (Only visible on Print) */}
-      {/* ========================================================================= */}
+      {/* 4. REDESIGNED PROFESSIONAL PRINT LAYOUT */}
       <div className="hidden print:block text-slate-900 bg-white font-serif p-8 max-w-4xl mx-auto border-4 border-slate-900">
-
-        {/* Letterhead Header */}
         <div className="flex justify-between items-start border-b-2 border-slate-900 pb-4 mb-6">
           <div>
             <h1 className="text-3xl font-black tracking-wider uppercase text-slate-900">NIRMAN AI</h1>
@@ -553,7 +597,6 @@ export default function CalculatorClient() {
           </div>
         </div>
 
-        {/* Project Type Heading */}
         <div className="bg-slate-100 p-3 border-l-4 border-slate-900 mb-6 flex justify-between items-center font-sans">
           <div>
             <span className="text-xs uppercase text-slate-500 font-bold block">Estimation Type</span>
@@ -566,10 +609,7 @@ export default function CalculatorClient() {
           <span className="text-xs bg-slate-200 px-3 py-1 font-bold text-slate-800 rounded uppercase">Standard Excel Verified</span>
         </div>
 
-        {/* Input & Calculation Data Tables */}
         <div className="grid grid-cols-2 gap-6 mb-8 font-sans">
-
-          {/* Input Specifications Box */}
           <div className="border border-slate-300 p-4 rounded">
             <h3 className="text-sm font-bold uppercase text-slate-900 border-b border-slate-300 pb-2 mb-3">Input Parameters</h3>
             <table className="w-full text-xs">
@@ -603,7 +643,6 @@ export default function CalculatorClient() {
             </table>
           </div>
 
-          {/* Quantity Takeoff Summary */}
           <div className="border border-slate-900 bg-slate-50 p-4 rounded flex flex-col justify-between">
             <div>
               <h3 className="text-sm font-bold uppercase text-slate-900 border-b border-slate-300 pb-2 mb-3">Required Material Takeoff</h3>
@@ -633,7 +672,6 @@ export default function CalculatorClient() {
               )}
             </div>
 
-            {/* Total Highlight Banner */}
             <div className="mt-4 pt-3 border-t-2 border-slate-900 flex justify-between items-baseline">
               <span className="text-xs font-bold uppercase text-slate-700">Estimated Total:</span>
               <span className="text-2xl font-black text-slate-900">
@@ -643,10 +681,8 @@ export default function CalculatorClient() {
               </span>
             </div>
           </div>
-
         </div>
 
-        {/* Technical Volume Notes */}
         <div className="border-t border-slate-200 pt-3 mb-12 text-[10px] text-slate-500 font-sans grid grid-cols-2 gap-4">
           <div>
             <p className="font-bold text-slate-700 mb-0.5">VOLUMETRIC ANALYSIS:</p>
@@ -660,7 +696,6 @@ export default function CalculatorClient() {
           </div>
         </div>
 
-        {/* Official Signatures Footer */}
         <div className="pt-8 border-t border-slate-300 flex justify-between items-end text-center font-sans">
           <div className="w-40">
             <div className="border-b border-slate-400 pb-1 mb-1"></div>
@@ -675,7 +710,6 @@ export default function CalculatorClient() {
             <p className="text-[10px] uppercase font-bold text-slate-900">Approved Stamp</p>
           </div>
         </div>
-
       </div>
 
     </main>
