@@ -1,11 +1,11 @@
 "use client";
-
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Calculator, FileText, Layers, Building2, Printer, MoreVertical } from "lucide-react";
 
 export default function CalculatorClient() {
   const [activeTab, setActiveTab] = useState<"wall" | "concrete" | "slab">("wall");
-  
+
   // ⚡ মোবাইলে ৩-ডট ড্রপডাউন মেনুর জন্য স্টেট
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -174,20 +174,21 @@ export default function CalculatorClient() {
 
       <div className="relative max-w-5xl mx-auto space-y-8 z-10 print:hidden">
 
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800/80 pb-6 gap-4">
-          <div>
-            <span className="inline-flex items-center gap-1.5 text-xs bg-blue-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20 font-medium backdrop-blur-md shadow-sm">
-              ✨ AI-Powered Estimation
-            </span>
-            <h1 className="text-4xl font-extrabold mt-2 tracking-tight drop-shadow-sm">
-              Nirman <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-300">AI</span>
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Smart Construction Cost Estimator & Material Calculator
-            </p>
-          </div>
-          <p className="text-xs text-slate-400 italic">
+        {/* Header Section (Centered) */}
+        <div className="flex flex-col items-center justify-center text-center border-b border-slate-800/80 pb-6 gap-3">
+          <span className="inline-flex items-center gap-1.5 text-xs bg-blue-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20 font-medium backdrop-blur-md shadow-sm">
+            ✨ AI-Powered Estimation
+          </span>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight drop-shadow-sm">
+            Nirman <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-300">AI</span>
+          </h1>
+
+          <p className="text-slate-400 text-sm max-w-md">
+            Smart Construction Cost Estimator & Material Calculator
+          </p>
+
+          <p className="text-xs text-slate-500 italic">
             Plan Better. <span className="text-cyan-400 font-semibold">Build Smarter.</span> Save More.
           </p>
         </div>
@@ -248,25 +249,22 @@ export default function CalculatorClient() {
               <div className="absolute left-0 right-0 top-16 bg-slate-900/95 backdrop-blur-2xl border border-slate-800 rounded-2xl shadow-2xl z-50 p-2 space-y-1">
                 <button
                   onClick={() => { setActiveTab("wall"); setIsMenuOpen(false); }}
-                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
-                    activeTab === "wall" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${activeTab === "wall" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                    }`}
                 >
                   <Building2 className="w-4 h-4" /> Wall Estimate
                 </button>
                 <button
                   onClick={() => { setActiveTab("concrete"); setIsMenuOpen(false); }}
-                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
-                    activeTab === "concrete" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${activeTab === "concrete" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                    }`}
                 >
                   <Layers className="w-4 h-4" /> Concrete Slab
                 </button>
                 <button
                   onClick={() => { setActiveTab("slab"); setIsMenuOpen(false); }}
-                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${
-                    activeTab === "slab" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
-                  }`}
+                  className={`w-full flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all ${activeTab === "slab" ? "bg-slate-800 text-cyan-400 font-bold" : "text-slate-300 hover:bg-slate-800/60"
+                    }`}
                 >
                   <Calculator className="w-4 h-4" /> Slab Reinforcement
                 </button>
@@ -582,6 +580,296 @@ export default function CalculatorClient() {
 
         </div>
       </div>
+
+
+      {/* ----------------- EXPANDED 1000+ WORDS SEO & EDUCATIONAL SECTION FOR ADSENSE ----------------- */}
+      <section className="mt-20 border-t border-slate-800/80 pt-16 space-y-12 text-slate-300 font-sans">
+
+        {/* Section Main Header */}
+        <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <span className="text-xs uppercase tracking-widest text-cyan-400 font-semibold bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+            Engineering Standard Guide
+          </span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            Comprehensive Civil Engineering & Material Calculation Guide
+          </h2>
+          <p className="text-sm text-slate-400 leading-relaxed">
+            Learn how Nirman AI computes structural material takeoffs using BNBC, ACI, and standard civil engineering structural codes.
+          </p>
+        </div>
+
+        {/* 1. How to Use Section */}
+        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-4">
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <span className="text-cyan-400">01.</span> How to Use Nirman AI Material Estimator
+          </h3>
+          <p className="text-sm text-slate-400 leading-relaxed">
+            Nirman AI is designed to simplify construction cost estimation for site engineers, structural designers, contractors, and individual house owners. Whether you are planning a single-story residence or a multi-story commercial building, obtaining accurate material takeoffs prevents cost overruns, material shortages, and site wastage.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 space-y-1">
+              <div className="text-cyan-400 font-bold text-xs uppercase">Step 1: Select Estimator</div>
+              <p className="text-xs text-slate-400">Choose between Brick Wall, Concrete Slab, or Steel Rebar calculation modules based on your site structural member.</p>
+            </div>
+            <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 space-y-1">
+              <div className="text-cyan-400 font-bold text-xs uppercase">Step 2: Enter Dimensions</div>
+              <p className="text-xs text-slate-400">Input precise structural dimensions like length, height, thickness, and mix ratios matching your architectural blueprints.</p>
+            </div>
+            <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 space-y-1">
+              <div className="text-cyan-400 font-bold text-xs uppercase">Step 3: Instant Breakdown</div>
+              <p className="text-xs text-slate-400">View real-time quantified breakdowns for cement bags, sand, aggregates, steel weight, and download printable reports.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Engineering Logic & Mathematical Formulas */}
+        <div className="space-y-6">
+          <div className="text-center space-y-1">
+            <h3 className="text-2xl font-bold text-white">Under the Hood: Engineering Formulas & Logic</h3>
+            <p className="text-xs text-slate-400">Scientific estimations aligned with Bangladesh National Building Code (BNBC) and American Concrete Institute (ACI).</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Brick Wall Module Details */}
+            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold text-sm border border-cyan-500/20">
+                  🧱
+                </div>
+                <h4 className="text-lg font-bold text-white">Brick Masonry & Mortar Calculation</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Standard masonry estimation accounts for completed brick wall volume plus mortar thickness between joints. To convert wet mortar volume into dry mixing volume, an engineering dry safety factor of <strong>35% (multiplier 1.35)</strong> is applied.
+                </p>
+                <ul className="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                  <li>Standard Brick Yield: <strong>12 Bricks per Cft</strong></li>
+                  <li>Mortar Mix Ratio: <strong>1:4 or 1:6</strong> (Cement : Sand)</li>
+                  <li>Sand Wastage Allowance: <strong>5% Site Safety Margin</strong></li>
+                </ul>
+              </div>
+              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl text-[11px] font-mono text-cyan-300">
+                Dry Mortar Vol = Wet Vol × 1.35
+              </div>
+            </div>
+
+            {/* Concrete Slab Module Details */}
+            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold text-sm border border-cyan-500/20">
+                  🏗️
+                </div>
+                <h4 className="text-lg font-bold text-white">Concrete Casting & Slab Mix Volume</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  When dry cement, sand, and coarse aggregates (Khowa or Stone Chips) are mixed with water, fine cement particles fill air voids within aggregates. Therefore, wet concrete shrinks significantly. We apply a standard conversion factor of <strong>1.54</strong> to determine required bulk dry ingredients.
+                </p>
+                <ul className="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                  <li>Nominal Mix Ratios: <strong>1:1.5:3 (M20) or 1:2:4 (M15)</strong></li>
+                  <li>Cement Density: <strong>1.25 Cft per 50kg Bag</strong></li>
+                  <li>Coarse Aggregates: Stone Chips or Broken Brick Chips</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl text-[11px] font-mono text-cyan-300">
+                Dry Concrete Vol = Wet Vol × 1.54
+              </div>
+            </div>
+
+            {/* Steel Rebar Weight Module Details */}
+            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold text-sm border border-cyan-500/20">
+                  ⚙️
+                </div>
+                <h4 className="text-lg font-bold text-white">Slab Reinforcement & Steel Weight</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Rebar calculation computes primary main direction bars, secondary distribution bars, and critical perimeter shear strengthening top bars along the <strong>L/4 slab zone</strong>. Steel density is computed using standard unit weight conversions based on bar diameter in millimeters.
+                </p>
+                <ul className="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                  <li>Standard Steel Density: <strong>7850 kg/m³</strong></li>
+                  <li>Perimeter Extra Top Zone: <strong>L/4 (25% Span Boundary)</strong></li>
+                  <li>Supported Diameters: <strong>8mm, 10mm, 12mm, 16mm, 20mm</strong></li>
+                </ul>
+              </div>
+              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl text-[11px] font-mono text-cyan-300">
+                Weight (kg) = (Dia² in mm / 532.2) × Feet
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* 3. Key Benefits Section */}
+        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-4">
+          <h3 className="text-xl font-bold text-white">Why Choose Nirman AI for Building Material Estimation?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-400">
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Eliminates Material Wastage & Over-purchasing
+              </h4>
+              <p className="leading-relaxed">
+                Unplanned material purchases lead to site clutter, cement hydration degradation, and financial loss. Nirman AI's precision calculation ensures you order exact material proportions plus controlled site safety margins.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Instant Site PDF & Print Reports
+              </h4>
+              <p className="leading-relaxed">
+                Generate professional, clean structural estimation reports directly from your mobile phone or laptop. Share PDF takeoffs with client management, site supervisors, and raw material suppliers.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Structural Code Compliance
+              </h4>
+              <p className="leading-relaxed">
+                Unlike generic online calculators that use simplified arbitrary numbers, Nirman AI integrates civil engineering standard factors like L/4 boundary extra top bars and nominal concrete mix ratios.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Free and Multi-Device Compatible
+              </h4>
+              <p className="leading-relaxed">
+                Nirman AI is 100% free to use with zero registration requirements. Works seamlessly across desktops, tablets, and smartphones on construction site conditions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Frequently Asked Questions (FAQ) Section */}
+        <div className="space-y-6 pt-4">
+          <div className="text-center space-y-1">
+            <h3 className="text-2xl font-bold text-white">Frequently Asked Questions (FAQ)</h3>
+            <p className="text-xs text-slate-400">Common queries regarding structural estimations and building material takeoffs.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm">Why is dry concrete volume 54% higher than wet volume?</h4>
+              <p className="text-slate-400 leading-relaxed">
+                When dry cement powder, sand grains, and stone chips are mixed with water, fine cement particles settle inside the interstitial voids between larger aggregate particles. This void compaction reduces physical volume. Therefore, engineers multiply wet volume by 1.54 to accurately calculate raw unmixed materials.
+              </p>
+            </div>
+
+            <div className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm">How many bricks are required for a 5-inch vs 10-inch wall?</h4>
+              <p className="text-slate-400 leading-relaxed">
+                Standard brick calculations require approximately 12 bricks per cubic foot (cft) of wall volume including mortar joints. For a 5-inch brick wall, approximately 5 bricks per square foot (sft) are needed, whereas a 10-inch brick wall requires approximately 10 bricks per sft.
+              </p>
+            </div>
+
+            <div className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm">What is the standard weight of 10mm steel rebar per feet?</h4>
+              <p className="text-slate-400 leading-relaxed">
+                Using the unit weight formula Weight (kg) = (d² / 532.2) × Length in Feet, a 10mm diameter steel bar weighs approximately 0.188 kg per foot (or 0.617 kg per meter).
+              </p>
+            </div>
+
+            <div className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80 space-y-2">
+              <h4 className="font-semibold text-slate-200 text-sm">What is the role of Extra Top rebar along the L/4 zone?</h4>
+              <p className="text-slate-400 leading-relaxed">
+                In reinforced concrete slabs, negative bending moments develop near perimeter supports (beams/walls). Extra top bars provided along the L/4 zone (outer 25% boundary of span length) resist negative moment cracking and prevent structural shear failure.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+      {/* Footer Section */}
+
+      <footer className="mt-20 border-t border-slate-800/80 pt-10 pb-8 text-slate-400 font-sans">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-800/60">
+
+          {/* Col 1: Brand Info */}
+          <div className="space-y-3 md:col-span-1">
+            <h3 className="text-xl font-bold text-white tracking-tight">
+              Nirman <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-300">AI</span>
+            </h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Smart construction cost estimation tool engineered for accurate structural material takeoffs.
+            </p>
+            <div className="flex items-center gap-2 pt-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-[11px] text-emerald-400 font-medium">System Online • v1.0</span>
+            </div>
+          </div>
+
+          {/* Col 2: Estimators Link */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Estimators</h4>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <button onClick={() => { setActiveTab("wall"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-cyan-400 transition-colors">
+                  Brick Wall Estimator
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { setActiveTab("concrete"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-cyan-400 transition-colors">
+                  Concrete Slab Calculator
+                </button>
+              </li>
+              <li>
+                <button onClick={() => { setActiveTab("slab"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-cyan-400 transition-colors">
+                  Slab Steel Rebar Weight
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Technical Standards */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Engineering Codes</h4>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li className="flex items-center gap-1.5">
+                <span className="text-cyan-400">✓</span> BNBC Standard Mix Ratios
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-cyan-400">✓</span> A36 Grade Steel Densities
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-cyan-400">✓</span> L/4 Perimeter Extra Top Formula
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 4: Quick Action & Support */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Feedback & Help</h4>
+            <p className="text-xs text-slate-400">
+              Have a feature request or noticed a formula discrepancy?
+            </p>
+            <a
+              href="mailto:support@nirmanai.com"
+              className="inline-flex items-center gap-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl border border-slate-700/80 transition-all"
+            >
+              ✉️ Send Feedback
+            </a>
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+          <p>© {new Date().getFullYear()} Nirman AI. All rights reserved.</p>
+          <div className="flex flex-wrap justify-center gap-6">
+            <Link href="/privacy" className="hover:text-slate-400 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-slate-400 transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/about" className="hover:text-slate-400 transition-colors">
+              About Us
+            </Link>
+            <Link href="/contact" className="hover:text-slate-400 transition-colors">
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </footer>
+
 
       {/* 4. REDESIGNED PROFESSIONAL PRINT LAYOUT */}
       <div className="hidden print:block text-slate-900 bg-white font-serif p-8 max-w-4xl mx-auto border-4 border-slate-900">
