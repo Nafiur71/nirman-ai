@@ -197,8 +197,8 @@ export default function CalculatorClient() {
           <button
             onClick={() => setActiveTab("wall")}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "wall"
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
           >
             <Building2 className="w-4 h-4" /> Wall Estimate
@@ -206,8 +206,8 @@ export default function CalculatorClient() {
           <button
             onClick={() => setActiveTab("concrete")}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "concrete"
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
           >
             <Layers className="w-4 h-4" /> Concrete Slab
@@ -215,8 +215,8 @@ export default function CalculatorClient() {
           <button
             onClick={() => setActiveTab("slab")}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeTab === "slab"
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+              ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
           >
             <Calculator className="w-4 h-4" /> Slab Reinforcement
@@ -239,8 +239,11 @@ export default function CalculatorClient() {
             {activeTab === "wall" && (
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Length (ft)</label>
+                  <label htmlFor="wall-length" className="text-xs text-slate-400 font-medium">
+                    Length (ft)
+                  </label>
                   <input
+                    id="wall-length"
                     type="number"
                     value={wallInputs.length}
                     onChange={(e) => setWallInputs({ ...wallInputs, length: Number(e.target.value) })}
@@ -248,8 +251,9 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Height (ft)</label>
+                  <label htmlFor="wall-height" className="text-xs text-slate-400 font-medium">Height (ft)</label>
                   <input
+                    id="wall-height"
                     type="number"
                     value={wallInputs.height}
                     onChange={(e) => setWallInputs({ ...wallInputs, height: Number(e.target.value) })}
@@ -257,8 +261,9 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Thickness (inches)</label>
+                  <label htmlFor="wall-thickness" className="text-xs text-slate-400 font-medium">Thickness (inches)</label>
                   <input
+                    id="wall-thickness"
                     type="number"
                     value={wallInputs.thicknessInch}
                     onChange={(e) => setWallInputs({ ...wallInputs, thicknessInch: Number(e.target.value) })}
@@ -267,8 +272,9 @@ export default function CalculatorClient() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Cement Ratio</label>
+                    <label htmlFor="wall-cement-ratio" className="text-xs text-slate-400 font-medium">Cement Ratio</label>
                     <input
+                      id="wall-cement-ratio"
                       type="number"
                       value={wallInputs.cementRatio}
                       onChange={(e) => setWallInputs({ ...wallInputs, cementRatio: Number(e.target.value) })}
@@ -276,8 +282,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Sand Ratio</label>
+                    <label htmlFor="wall-sand-ratio" className="text-xs text-slate-400 font-medium">Sand Ratio</label>
                     <input
+                      id="wall-sand-ratio"
                       type="number"
                       value={wallInputs.sandRatio}
                       onChange={(e) => setWallInputs({ ...wallInputs, sandRatio: Number(e.target.value) })}
@@ -292,8 +299,9 @@ export default function CalculatorClient() {
             {activeTab === "concrete" && (
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Length (ft)</label>
+                  <label htmlFor="concrete-length" className="text-xs text-slate-400 font-medium">Length (ft)</label>
                   <input
+                    id="concrete-length"
                     type="number"
                     value={concreteInputs.length}
                     onChange={(e) => setConcreteInputs({ ...concreteInputs, length: Number(e.target.value) })}
@@ -301,8 +309,9 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Width (ft)</label>
+                  <label htmlFor="concrete-width" className="text-xs text-slate-400 font-medium">Width (ft)</label>
                   <input
+                    id="concrete-width"
                     type="number"
                     value={concreteInputs.width}
                     onChange={(e) => setConcreteInputs({ ...concreteInputs, width: Number(e.target.value) })}
@@ -310,8 +319,9 @@ export default function CalculatorClient() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Thickness (inches)</label>
+                  <label htmlFor="concrete-thickness" className="text-xs text-slate-400 font-medium">Thickness (inches)</label>
                   <input
+                    id="concrete-thickness"
                     type="number"
                     value={concreteInputs.thicknessInch}
                     onChange={(e) => setConcreteInputs({ ...concreteInputs, thicknessInch: Number(e.target.value) })}
@@ -320,8 +330,9 @@ export default function CalculatorClient() {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Cement</label>
+                    <label htmlFor="concrete-cement-ratio" className="text-xs text-slate-400 font-medium">Cement</label>
                     <input
+                      id="concrete-cement-ratio"
                       type="number"
                       value={concreteInputs.cementRatio}
                       onChange={(e) => setConcreteInputs({ ...concreteInputs, cementRatio: Number(e.target.value) })}
@@ -329,8 +340,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Sand</label>
+                    <label htmlFor="concrete-sand-ratio" className="text-xs text-slate-400 font-medium">Sand</label>
                     <input
+                      id="concrete-sand-ratio"
                       type="number"
                       value={concreteInputs.sandRatio}
                       onChange={(e) => setConcreteInputs({ ...concreteInputs, sandRatio: Number(e.target.value) })}
@@ -338,8 +350,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Aggregate</label>
+                    <label htmlFor="concrete-aggregate-ratio" className="text-xs text-slate-400 font-medium">Aggregate</label>
                     <input
+                      id="concrete-aggregate-ratio"
                       type="number"
                       value={concreteInputs.aggregateRatio}
                       onChange={(e) => setConcreteInputs({ ...concreteInputs, aggregateRatio: Number(e.target.value) })}
@@ -355,8 +368,9 @@ export default function CalculatorClient() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Length (ft)</label>
+                    <label htmlFor="slab-length" className="text-xs text-slate-400 font-medium">Length (ft)</label>
                     <input
+                      id="slab-length"
                       type="number"
                       value={slabInputs.lengthFt}
                       onChange={(e) => setSlabInputs({ ...slabInputs, lengthFt: Number(e.target.value) })}
@@ -364,8 +378,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Breadth (ft)</label>
+                    <label htmlFor="slab-breadth" className="text-xs text-slate-400 font-medium">Breadth (ft)</label>
                     <input
+                      id="slab-breadth"
                       type="number"
                       value={slabInputs.breadthFt}
                       onChange={(e) => setSlabInputs({ ...slabInputs, breadthFt: Number(e.target.value) })}
@@ -374,8 +389,9 @@ export default function CalculatorClient() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 font-medium">Rod Dia (mm)</label>
+                  <label htmlFor="slab-rod-dia" className="text-xs text-slate-400 font-medium">Rod Dia (mm)</label>
                   <input
+                    id="slab-rod-dia"
                     type="number"
                     value={slabInputs.rodDiaMm}
                     onChange={(e) => setSlabInputs({ ...slabInputs, rodDiaMm: Number(e.target.value) })}
@@ -384,8 +400,9 @@ export default function CalculatorClient() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Main Spacing (inches)</label>
+                    <label htmlFor="slab-main-spacing" className="text-xs text-slate-400 font-medium">Main Spacing (inches)</label>
                     <input
+                      id="slab-main-spacing"
                       type="number"
                       value={slabInputs.mainSpacingInch}
                       onChange={(e) => setSlabInputs({ ...slabInputs, mainSpacingInch: Number(e.target.value) })}
@@ -393,8 +410,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Dist Spacing (inches)</label>
+                    <label htmlFor="slab-dist-spacing" className="text-xs text-slate-400 font-medium">Dist Spacing (inches)</label>
                     <input
+                      id="slab-dist-spacing"
                       type="number"
                       value={slabInputs.distSpacingInch}
                       onChange={(e) => setSlabInputs({ ...slabInputs, distSpacingInch: Number(e.target.value) })}
@@ -404,8 +422,9 @@ export default function CalculatorClient() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800/80">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Extra Top Short Spacing (in)</label>
+                    <label htmlFor="slab-extra-top-short-spacing" className="text-xs text-slate-400 font-medium">Extra Top Short Spacing (in)</label>
                     <input
+                      id="slab-extra-top-short-spacing"
                       type="number"
                       value={slabInputs.extraTopShortSpacingInch}
                       onChange={(e) => setSlabInputs({ ...slabInputs, extraTopShortSpacingInch: Number(e.target.value) })}
@@ -413,8 +432,9 @@ export default function CalculatorClient() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 font-medium">Extra Top Long Spacing (in)</label>
+                    <label htmlFor="slab-extra-top-long-spacing" className="text-xs text-slate-400 font-medium">Extra Top Long Spacing (in)</label>
                     <input
+                      id="slab-extra-top-long-spacing"
                       type="number"
                       value={slabInputs.extraTopLongSpacingInch}
                       onChange={(e) => setSlabInputs({ ...slabInputs, extraTopLongSpacingInch: Number(e.target.value) })}
